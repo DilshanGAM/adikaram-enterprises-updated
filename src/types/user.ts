@@ -9,6 +9,7 @@ export interface UserType {
     status? : string;
 }
 export interface ProductType{
+    barcode? : string;
     key: string;
     name: string;
     stock: number;

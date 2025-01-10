@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
 		const body = await req.json();
 
 		const {
+            barcode,
 			key,
 			name,
 			stock,
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
 		// Create product
 		const product = await prisma.product.create({
 			data: {
+                barcode,
 				key,
 				name,
 				stock,
@@ -124,6 +126,7 @@ export async function PUT(req: NextRequest) {
         const body = await req.json();
 
         const {
+            barcode,
             key,
             name,
             stock,
@@ -164,6 +167,7 @@ export async function PUT(req: NextRequest) {
         const product = await prisma.product.update({
             where: { key : productKey||"" },
             data: {
+                barcode,
                 name,
                 stock,
                 container_type,

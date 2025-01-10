@@ -162,6 +162,7 @@ export default function StockAdminPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Image</TableHead>
+                  <TableHead>Barcode</TableHead>
                   <TableHead>Key</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Stock</TableHead>
@@ -188,6 +189,7 @@ export default function StockAdminPage() {
                           height={50}
                         />
                       </TableCell>
+                      <TableCell>{product.barcode}</TableCell>
                       <TableCell>{product.key}</TableCell>
                       <TableCell>{product.name}</TableCell>
                       <TableCell>{product.stock}</TableCell>

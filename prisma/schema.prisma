@@ -22,10 +22,13 @@ model User {
   role      String
   password  String    @default("$2a$12$RdUwAbGF35Xn8/wEAcG4Q.gADhB0LiLGDUKsaRrRkuCFafavKb0x2")
   status    String    @default("active")
-  batches   Batch[]   // Relation to Batch model
+  batches   Batch[]
+  visits    Visit[]  @relation("VisitedBy")
+  confirmed_visits Visit[] @relation("ConfirmedBy")
 }
 
 model Product {
+  barcode             String?
   key                   String   @id @unique
   name                 String
   stock                Int
@@ -38,6 +41,7 @@ model Product {
   status               String    @default("active")
   product_image        String    @default("/default.jpg")
   batches              Batch[]   // Relation to Batch model
+  invoice_items        InvoiceItem[]
 }
 
 model Batch {
@@ -55,4 +59,78 @@ model Batch {
   date                 DateTime  @default(now())
   addedBy              String
   user                 User      @relation(fields: [addedBy], references: [email])
+  status               String    @default("in-stock")
+  remaining            Int       @default(0)
+  inCount              Int       @default(0)
+
+
+}
+
+model Route{
+  name String @id @unique
+  description String
+  distance Float
+  shops ShopRoute[]
+  visits Visit[]
+}
+
+model Shop{
+  name String @id @unique
+  address String
+  phone String
+  whatsapp String
+  status String @default("active")
+  owner String
+  max_credit Float
+  ShopRoute ShopRoute[]
+}
+
+model ShopRoute{
+  order Int
+  route_name String
+  shop_name String
+  route Route @relation(fields: [route_name], references: [name])
+  shop Shop @relation(fields: [shop_name], references: [name])
+  @@id([route_name, shop_name])
+}
+
+model Visit{
+  id Int @id @default(autoincrement())
+  route_name String
+  visitedBy String
+  start_time DateTime @default(now())
+  end_time DateTime?
+  confirmedBy String?
+  status String @default("started")
+  notes String?
+  route Route @relation(fields: [route_name], references: [name])
+  visitedByUser User @relation("VisitedBy",fields: [visitedBy], references: [email])
+  confirmedByUser User? @relation("ConfirmedBy",fields: [confirmedBy], references: [email])
+}
+
+model Invoice{
+  id Int @id @default(autoincrement())
+  shop_name String
+  date DateTime @default(now())
+  visit_id Int
+  discount Float
+  deliveredDate DateTime?
+  type String@default("on-delivery")//credit //cash
+  status String @default("not-paid") //paid // not-paid // partially-paid
+  tax Float@default(0)
+  items InvoiceItem[]
+}
+model InvoiceItem{
+  id Int @id @default(autoincrement())
+  invoice_id Int
+  product_key String
+  batch_id Int
+  uom Int
+  packs Int
+  loose Int
+  quantity Int
+  price Float
+  Invoice Invoice @relation(fields: [invoice_id], references: [id])
+  Product Product @relation(fields: [product_key], references: [key])
+  // Batch Batch @relation(fields: [batch_id], references: [batch_id])
 }
