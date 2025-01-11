@@ -12,7 +12,7 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-model User {
+model user {
   email     String    @id @unique
   name      String
   phone     String
@@ -22,115 +22,192 @@ model User {
   role      String
   password  String    @default("$2a$12$RdUwAbGF35Xn8/wEAcG4Q.gADhB0LiLGDUKsaRrRkuCFafavKb0x2")
   status    String    @default("active")
-  batches   Batch[]
-  visits    Visit[]  @relation("VisitedBy")
-  confirmed_visits Visit[] @relation("ConfirmedBy")
+  batches   batch[]
+  visits    visit[]  @relation("visited_by")
+  confirmed_visits visit[] @relation("confirmed_by")
 }
 
-model Product {
+model product {
   barcode             String?
-  key                   String   @id @unique
-  name                 String
-  stock                Int
-  container_type       String
-  uom                  Int
-  volume               Float
-  flavour              String
+  key                 String   @id @unique
+  name                String
+  stock               Int
+  container_type      String
+  uom                 Int
+  volume              Float
+  flavour             String
   default_labeled_price Float
-  default_cost         Float
-  status               String    @default("active")
-  product_image        String    @default("/default.jpg")
-  batches              Batch[]   // Relation to Batch model
-  invoice_items        InvoiceItem[]
+  default_cost        Float
+  status              String    @default("active")
+  product_image       String    @default("/default.jpg")
+  batches             batch[]
+  invoice_items       invoice_item[]
+  free_items          free_item[]
+  returns             return_bill_item[]
 }
 
-model Batch {
-  batch_id             Int       @id @default(autoincrement())
-  product_key          String
-  product              Product   @relation(fields: [product_key], references: [key])
-  uom                  Int
-  packs                Int
-  loose                Int
-  mfd                  DateTime
-  exp                  DateTime
-  cost                 Float
-  labeled_price        Float
-  purchase_invoice_id  String
-  date                 DateTime  @default(now())
-  addedBy              String
-  user                 User      @relation(fields: [addedBy], references: [email])
-  status               String    @default("in-stock")
-  remaining            Int       @default(0)
-  inCount              Int       @default(0)
-
-
+model batch {
+  batch_id            Int       @id @default(autoincrement())
+  product_key         String
+  product             product   @relation(fields: [product_key], references: [key])
+  uom                 Int
+  packs               Int
+  loose               Int
+  mfd                 DateTime
+  exp                 DateTime
+  cost                Float
+  labeled_price       Float
+  purchase_invoice_id String
+  date                DateTime  @default(now())
+  added_by            String
+  user                user      @relation(fields: [added_by], references: [email])
+  status              String    @default("in-stock")
+  remaining           Int       @default(0)
+  in_count            Int       @default(0)
+  invoice_items       invoice_item[]
+  free_items          free_item[]
+  returns             return_bill_item[]
 }
 
-model Route{
-  name String @id @unique
+model route {
+  name        String @id @unique
   description String
-  distance Float
-  shops ShopRoute[]
-  visits Visit[]
+  distance    Float
+  shops       shop_route[]
+  visits      visit[]
 }
 
-model Shop{
-  name String @id @unique
-  address String
-  phone String
-  whatsapp String
-  status String @default("active")
-  owner String
-  max_credit Float
-  ShopRoute ShopRoute[]
+model shop {
+  name        String @id @unique
+  address     String
+  phone       String
+  whatsapp    String
+  status      String @default("active")
+  owner       String
+  max_credit  Float
+  shop_route  shop_route[]
+  invoices    invoice[]
+  returns     return_bill[]
+  payments    payment[]
 }
 
-model ShopRoute{
-  order Int
+model shop_route {
+  order      Int
   route_name String
-  shop_name String
-  route Route @relation(fields: [route_name], references: [name])
-  shop Shop @relation(fields: [shop_name], references: [name])
+  shop_name  String
+  route      route @relation(fields: [route_name], references: [name])
+  shop       shop  @relation(fields: [shop_name], references: [name])
   @@id([route_name, shop_name])
 }
 
-model Visit{
-  id Int @id @default(autoincrement())
-  route_name String
-  visitedBy String
-  start_time DateTime @default(now())
-  end_time DateTime?
-  confirmedBy String?
-  status String @default("started")
-  notes String?
-  route Route @relation(fields: [route_name], references: [name])
-  visitedByUser User @relation("VisitedBy",fields: [visitedBy], references: [email])
-  confirmedByUser User? @relation("ConfirmedBy",fields: [confirmedBy], references: [email])
+model visit {
+  id                Int       @id @default(autoincrement())
+  route_name        String
+  visited_by        String
+  start_time        DateTime  @default(now())
+  end_time          DateTime?
+  confirmed_by      String?
+  status            String    @default("started")
+  notes             String?
+  route             route     @relation(fields: [route_name], references: [name])
+  visited_by_user   user      @relation("visited_by", fields: [visited_by], references: [email])
+  confirmed_by_user user?     @relation("confirmed_by", fields: [confirmed_by], references: [email])
+  invoices          invoice[]
+  payments          payment[]
 }
 
-model Invoice{
-  id Int @id @default(autoincrement())
-  shop_name String
-  date DateTime @default(now())
-  visit_id Int
-  discount Float
-  deliveredDate DateTime?
-  type String@default("on-delivery")//credit //cash
-  status String @default("not-paid") //paid // not-paid // partially-paid
-  tax Float@default(0)
-  items InvoiceItem[]
+model invoice {
+  id             Int       @id @default(autoincrement())
+  shop_name      String
+  date           DateTime  @default(now())
+  visit_id       Int
+  discount       Float
+  delivered_date DateTime?
+  type           String    @default("on-delivery")
+  status         String    @default("not-paid")
+  tax            Float     @default(0)
+  items          invoice_item[]
+  free_items     free_item[]
+  returns        return_bill_item[]
+  payments       payment[]
+  shop           shop      @relation(fields: [shop_name], references: [name])
+  visit          visit     @relation(fields: [visit_id], references: [id])
 }
-model InvoiceItem{
-  id Int @id @default(autoincrement())
-  invoice_id Int
-  product_key String
-  batch_id Int
-  uom Int
-  packs Int
-  loose Int
-  quantity Int
-  price Float
-  Invoice Invoice @relation(fields: [invoice_id], references: [id])
-  Product Product @relation(fields: [product_key], references: [key])
-  // Batch Batch @relation(fields: [batch_id], references: [batch_id])
+
+model invoice_item {
+  id           Int       @id @default(autoincrement())
+  invoice_id   Int
+  product_key  String
+  batch_id     Int?
+  uom          Int
+  packs        Int
+  loose        Int
+  quantity     Int
+  price        Float
+  returns      return_bill_item[]
+  invoice      invoice  @relation(fields: [invoice_id], references: [id])
+  product      product  @relation(fields: [product_key], references: [key])
+  batch        batch?   @relation(fields: [batch_id], references: [batch_id])
+}
+
+model free_item {
+  id           Int       @id @default(autoincrement())
+  invoice_id   Int
+  product_key  String
+  batch_id     Int?
+  uom          Int
+  packs        Int
+  loose        Int
+  invoice      invoice  @relation(fields: [invoice_id], references: [id])
+  product      product  @relation(fields: [product_key], references: [key])
+  batch        batch?   @relation(fields: [batch_id], references: [batch_id])
+}
+
+model return_bill {
+  id             Int       @id @default(autoincrement())
+  shop_name      String
+  date           DateTime  @default(now())
+  visit_id       Int
+  returned_date  DateTime?
+  status         String    @default("not-covered")
+  deductions     Float     @default(0)
+  covered_in     Int?
+  items          return_bill_item[]
+  payment        payment[]
+  shop           shop      @relation(fields: [shop_name], references: [name])
+}
+
+model return_bill_item {
+  id              Int       @id @default(autoincrement())
+  return_bill_id  Int
+  product_key     String
+  batch_id        Int?
+  uom             Int
+  packs           Int
+  loose           Int
+  quantity        Int
+  price           Float
+  invoice_item_id Int?
+  invoice         Int?
+  reason          String    @default("expired")
+  return_bill     return_bill @relation(fields: [return_bill_id], references: [id])
+  product         product    @relation(fields: [product_key], references: [key])
+  batch           batch?     @relation(fields: [batch_id], references: [batch_id])
+  invoice_item    invoice_item? @relation(fields: [invoice_item_id], references: [id])
+  invoice_ref     invoice?   @relation(fields: [invoice], references: [id])
+}
+
+model payment {
+  id              Int       @id @default(autoincrement())
+  shop_name       String
+  date            DateTime  @default(now())
+  visit_id        Int?
+  invoice_id      Int
+  amount          Float
+  type            String    @default("cash")
+  return_bill_id  Int?
+  payment_return_bill return_bill? @relation(fields: [return_bill_id], references: [id])
+  invoice         invoice   @relation(fields: [invoice_id], references: [id])
+  shop            shop      @relation(fields: [shop_name], references: [name])
+  visit           visit?    @relation(fields: [visit_id], references: [id])
 }
