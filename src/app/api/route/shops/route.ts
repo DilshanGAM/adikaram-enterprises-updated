@@ -33,9 +33,14 @@ async function authorizeUser(req: NextRequest, allowedRoles: string[]) {
 /**
  * GET: Retrieve all shops in a route
  */
-export async function GET(req: NextRequest, { params }: { params: { routeName: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const { routeName } = params;
+    //get routeName from url parameters
+    const routeName = req.nextUrl.searchParams.get("routeName") || "";
+    if(routeName === ""){
+        return NextResponse.json({ message: "Route name is missing" }, { status: 400 });
+    }
+    console.log(routeName);
     const shops = await prisma.shop_route.findMany({
       where: { route_name: routeName },
       orderBy: { order: "asc" },

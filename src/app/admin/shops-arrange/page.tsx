@@ -27,7 +27,7 @@ export default function ManageShopsInRoutePage() {
       const token = localStorage.getItem("token");
       try {
         const [routeShopsRes, allShopsRes] = await Promise.all([
-          axios.get(`/api/route/${routeName}/shops`, {
+          axios.get(`/api/route/shops?routeName=${routeName}`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           axios.get("/api/shop", {
@@ -78,7 +78,7 @@ export default function ManageShopsInRoutePage() {
     const token = localStorage.getItem("token");
     setLoading(true);
     try {
-      await axios.put(`/api/route/${routeName}/shops`, { shops: shopsInRoute }, {
+      await axios.put(`/api/route/shops?routeName=${routeName}`, { shops: shopsInRoute }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Route updated successfully!");
