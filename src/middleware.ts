@@ -1,6 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import * as jose from 'jose';
+import { Code } from 'lucide-react';
 
 
 export async function middleware( req : NextRequest ) {
@@ -13,6 +14,8 @@ export async function middleware( req : NextRequest ) {
           
           if(user){
             req.headers.set("user",JSON.stringify(user.payload));
+          }else{
+            return NextResponse.json({message: "User not found",code : 2626 , description : "Your login session expired or you have been trying to use forged login token."}, {status: 404});
           }
       }
       //add all data of the request and send it to the next middleware

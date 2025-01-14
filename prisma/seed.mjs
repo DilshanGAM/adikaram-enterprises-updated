@@ -12,7 +12,7 @@ async function main() {
       address: "Maharagama, Sri Lanka",
       title: "System Administrator",
       role: "admin",
-      password: "$2y$12$W3ulNwQG7ssME77.nA.SQO7E5gUL3yC9i9ZmMA1a6Fg2/9BHV1HqC",
+      password: "$2b$10$owGhgACyMsHLKEEKsFkyieEhlgcwkIgOLH6H/sFWdZ2bS7pRk8Bee",
     },
   });
 }

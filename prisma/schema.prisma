@@ -1,6 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
@@ -13,29 +12,204 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
-model User {
-  email String @id @unique
-  name String
-  phone String
-  whatsapp String
-  address String
-  title String
-  role String
-  password String @default("$2a$12$RdUwAbGF35Xn8/wEAcG4Q.gADhB0LiLGDUKsaRrRkuCFafavKb0x2")
-  status String @default("active")
+model user {
+  email     String    @id @unique
+  name      String
+  phone     String
+  whatsapp  String
+  address   String
+  title     String
+  role      String
+  password  String    @default("$2a$12$RdUwAbGF35Xn8/wEAcG4Q.gADhB0LiLGDUKsaRrRkuCFafavKb0x2")
+  status    String    @default("active")
+  batches   batch[]
+  visits    visit[]  @relation("visited_by")
+  confirmed_visits visit[] @relation("confirmed_by")
 }
 
-model Product {
-  key String @id @unique
-  name String
-  stock Int
-  container_type String
-  uom Int
-  volume Float
-  flavour String
+model product {
+  barcode             String?
+  key                 String   @id @unique
+  name                String
+  stock               Int
+  container_type      String
+  uom                 Int
+  volume              Float
+  flavour             String
   default_labeled_price Float
-  default_cost Float
-  status String @default("active")
-  product_image String @default("/default.jpg")  
+  default_cost        Float
+  status              String    @default("active")
+  product_image       String    @default("/default.jpg")
+  batches             batch[]
+  invoice_items       invoice_item[]
+  free_items          free_item[]
+  returns             return_bill_item[]
 }
 
+model batch {
+  batch_id            Int       @id @default(autoincrement())
+  product_key         String
+  product             product   @relation(fields: [product_key], references: [key])
+  uom                 Int
+  packs               Int
+  loose               Int
+  mfd                 DateTime
+  exp                 DateTime
+  cost                Float
+  labeled_price       Float
+  purchase_invoice_id String
+  date                DateTime  @default(now())
+  added_by            String
+  user                user      @relation(fields: [added_by], references: [email])
+  status              String    @default("in-stock")
+  remaining           Int       @default(0)
+  in_count            Int       @default(0)
+  invoice_items       invoice_item[]
+  free_items          free_item[]
+  returns             return_bill_item[]
+}
+
+model route {
+  name        String @id @unique
+  description String
+  distance    Float
+  shops       shop_route[]
+  visits      visit[]
+}
+
+model shop {
+  name        String @id @unique
+  address     String
+  phone       String
+  whatsapp    String
+  status      String @default("active")
+  owner       String
+  max_credit  Float
+  longitude   Float
+  latitude    Float
+  shop_route  shop_route[]
+  invoices    invoice[]
+  returns     return_bill[]
+  payments    payment[]
+}
+
+model shop_route {
+  order      Int
+  route_name String
+  shop_name  String
+  route      route @relation(fields: [route_name], references: [name])
+  shop       shop  @relation(fields: [shop_name], references: [name])
+  @@id([route_name, shop_name])
+}
+
+model visit {
+  id                Int       @id @default(autoincrement())
+  route_name        String
+  visited_by        String
+  start_time        DateTime  @default(now())
+  end_time          DateTime?
+  confirmed_by      String?
+  status            String    @default("started")
+  notes             String?
+  route             route     @relation(fields: [route_name], references: [name])
+  visited_by_user   user      @relation("visited_by", fields: [visited_by], references: [email])
+  confirmed_by_user user?     @relation("confirmed_by", fields: [confirmed_by], references: [email])
+  invoices          invoice[]
+  payments          payment[]
+}
+
+model invoice {
+  id             Int       @id @default(autoincrement())
+  shop_name      String
+  date           DateTime  @default(now())
+  visit_id       Int
+  discount       Float
+  delivered_date DateTime?
+  type           String    @default("on-delivery")
+  status         String    @default("not-paid")
+  tax            Float     @default(0)
+  items          invoice_item[]
+  free_items     free_item[]
+  returns        return_bill_item[]
+  payments       payment[]
+  shop           shop      @relation(fields: [shop_name], references: [name])
+  visit          visit     @relation(fields: [visit_id], references: [id])
+}
+
+model invoice_item {
+  id           Int       @id @default(autoincrement())
+  invoice_id   Int
+  product_key  String
+  batch_id     Int?
+  uom          Int
+  packs        Int
+  loose        Int
+  quantity     Int
+  price        Float
+  returns      return_bill_item[]
+  invoice      invoice  @relation(fields: [invoice_id], references: [id])
+  product      product  @relation(fields: [product_key], references: [key])
+  batch        batch?   @relation(fields: [batch_id], references: [batch_id])
+}
+
+model free_item {
+  id           Int       @id @default(autoincrement())
+  invoice_id   Int
+  product_key  String
+  batch_id     Int?
+  uom          Int
+  packs        Int
+  loose        Int
+  invoice      invoice  @relation(fields: [invoice_id], references: [id])
+  product      product  @relation(fields: [product_key], references: [key])
+  batch        batch?   @relation(fields: [batch_id], references: [batch_id])
+}
+
+model return_bill {
+  id             Int       @id @default(autoincrement())
+  shop_name      String
+  date           DateTime  @default(now())
+  visit_id       Int
+  returned_date  DateTime?
+  status         String    @default("not-covered")
+  deductions     Float     @default(0)
+  covered_in     Int?
+  items          return_bill_item[]
+  payment        payment[]
+  shop           shop      @relation(fields: [shop_name], references: [name])
+}
+
+model return_bill_item {
+  id              Int       @id @default(autoincrement())
+  return_bill_id  Int
+  product_key     String
+  batch_id        Int?
+  uom             Int
+  packs           Int
+  loose           Int
+  quantity        Int
+  price           Float
+  invoice_item_id Int?
+  invoice         Int?
+  reason          String    @default("expired")
+  return_bill     return_bill @relation(fields: [return_bill_id], references: [id])
+  product         product    @relation(fields: [product_key], references: [key])
+  batch           batch?     @relation(fields: [batch_id], references: [batch_id])
+  invoice_item    invoice_item? @relation(fields: [invoice_item_id], references: [id])
+  invoice_ref     invoice?   @relation(fields: [invoice], references: [id])
+}
+
+model payment {
+  id              Int       @id @default(autoincrement())
+  shop_name       String
+  date            DateTime  @default(now())
+  visit_id        Int?
+  invoice_id      Int
+  amount          Float
+  type            String    @default("cash")
+  return_bill_id  Int?
+  payment_return_bill return_bill? @relation(fields: [return_bill_id], references: [id])
+  invoice         invoice   @relation(fields: [invoice_id], references: [id])
+  shop            shop      @relation(fields: [shop_name], references: [name])
+  visit           visit?    @relation(fields: [visit_id], references: [id])
+}
