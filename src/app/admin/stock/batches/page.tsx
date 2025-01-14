@@ -21,16 +21,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import AddBatchForm from "@/components/ui/add-batch-form";
+import BatchForm from "@/components/ui/add-batch-form";
 import { BatchType } from "@/types/user";
 
 export default function BatchAdminPage() {
-  const [batches, setBatches] = useState([]);
-  const [filteredBatches, setFilteredBatches] = useState([]);
+  const [batches, setBatches] = useState<BatchType[]>([]);
+  const [filteredBatches, setFilteredBatches] = useState<BatchType[]>([]);
   const [search, setSearch] = useState("");
   const [batchesLoading, setBatchesLoading] = useState(true);
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
-  const [selectedBatch, setSelectedBatch] = useState<BatchType|null>(null); // For editing batches
+  const [selectedBatch, setSelectedBatch] = useState<BatchType | null>(null); // For editing batches
 
   // Fetch batches from the API
   useEffect(() => {
@@ -58,9 +58,9 @@ export default function BatchAdminPage() {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     const filtered = batches.filter(
-      (batch: any) =>
-        batch.batch_id.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        batch.product_name.toLowerCase().includes(e.target.value.toLowerCase())
+      (batch) =>
+        batch.batch_id.toString().includes(e.target.value) ||
+        batch.product_key.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setFilteredBatches(filtered);
   };
@@ -72,7 +72,7 @@ export default function BatchAdminPage() {
   };
 
   // Open modal for editing an existing batch
-  const handleEditBatch = (batch: any) => {
+  const handleEditBatch = (batch: BatchType) => {
     setSelectedBatch(batch); // Set the batch to be edited
     setIsAddEditModalOpen(true);
   };
@@ -97,7 +97,7 @@ export default function BatchAdminPage() {
           {/* Search and Actions */}
           <div className="flex items-center gap-4 mb-4">
             <Input
-              placeholder="Search by batch ID or product name"
+              placeholder="Search by batch ID or product key"
               value={search}
               onChange={handleSearch}
               className="w-full max-w-md"
@@ -113,9 +113,9 @@ export default function BatchAdminPage() {
                     {selectedBatch ? "Edit Batch" : "Add Batch"}
                   </DialogTitle>
                 </DialogHeader>
-                <AddBatchForm
-                    batch={selectedBatch}
-                    onSuccess={() => handleModalClose()}
+                <BatchForm
+                  batch={selectedBatch}
+                  onSuccess={handleModalClose}
                 />
               </DialogContent>
             </Dialog>
@@ -128,7 +128,7 @@ export default function BatchAdminPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Batch ID</TableHead>
-                  <TableHead>Product Name</TableHead>
+                  <TableHead>Product Key</TableHead>
                   <TableHead>UOM</TableHead>
                   <TableHead>Packs</TableHead>
                   <TableHead>Loose</TableHead>
@@ -140,15 +140,15 @@ export default function BatchAdminPage() {
               </TableHeader>
               <TableBody>
                 {filteredBatches.length > 0 ? (
-                  filteredBatches.map((batch: any) => (
+                  filteredBatches.map((batch) => (
                     <TableRow key={batch.batch_id}>
                       <TableCell>{batch.batch_id}</TableCell>
-                      <TableCell>{batch.product_name}</TableCell>
+                      <TableCell>{batch.product_key}</TableCell>
                       <TableCell>{batch.uom}</TableCell>
                       <TableCell>{batch.packs}</TableCell>
                       <TableCell>{batch.loose}</TableCell>
-                      <TableCell>{batch.mfd}</TableCell>
-                      <TableCell>{batch.exp}</TableCell>
+                      <TableCell>{new Date(batch.mfd).toDateString()}</TableCell>
+                      <TableCell>{new Date(batch.exp).toDateString()}</TableCell>
                       <TableCell>{batch.cost}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">

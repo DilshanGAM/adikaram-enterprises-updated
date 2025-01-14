@@ -85,6 +85,8 @@ model shop {
   status      String @default("active")
   owner       String
   max_credit  Float
+  longitude   Float
+  latitude    Float
   shop_route  shop_route[]
   invoices    invoice[]
   returns     return_bill[]

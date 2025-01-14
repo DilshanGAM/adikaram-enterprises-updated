@@ -36,3 +36,21 @@ export interface BatchType{
     date: Date;
     addedBy: string;
 }
+//shop
+export interface ShopType{
+    name: string;
+    address: string;
+    phone: string;
+    whatsapp: string;
+    status: string;
+    owner: string;
+    max_credit: number;
+    longitude: string;
+    latitude: string;
+}
+//shop_route
+export interface ShopRouteType{
+    order: number;
+    route_name: string;
+    shop_name: string;
+}
