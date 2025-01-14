@@ -57,11 +57,13 @@ export async function GET(req: NextRequest) {
 /**
  * PUT: Update the shops in a route
  */
-export async function PUT(req: NextRequest, { params }: { params: { routeName: string } }) {
+export async function PUT(req: NextRequest) {
   try {
     await authorizeUser(req, ["admin", "manager"]);
-
-    const { routeName } = params;
+    const routeName = req.nextUrl.searchParams.get("routeName") || "";
+    if(routeName === ""){
+        return NextResponse.json({ message: "Route name is missing" }, { status: 400 });
+    }
     const { shops } = await req.json();
 
     // Clear existing shops in the route
