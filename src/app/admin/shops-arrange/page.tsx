@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ShopRouteType, ShopType } from "@/types/user";
 
-export default function ManageShopsInRoutePage() {
+function ManageShopsInRoutePage() {
     const searchParams = useSearchParams();
   const routeName = searchParams.get("routeName") || "";
   const [shopsInRoute, setShopsInRoute] = useState<ShopRouteType[]>([]);
@@ -150,3 +150,11 @@ export default function ManageShopsInRoutePage() {
     </div>
   );
 }
+
+export default function RouteNameWrapper() {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ManageShopsInRoutePage />
+      </Suspense>
+    );
+  }
