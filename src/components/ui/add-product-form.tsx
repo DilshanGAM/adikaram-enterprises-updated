@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label"
+import { Label } from "@/components/ui/label";
 
 import {
 	Select,
@@ -23,6 +23,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 	const [formData, setFormData] = useState({
+		barcode : product?.barcode || "",
 		key: product?.key || "",
 		name: product?.name || "",
 		stock: product?.stock || "",
@@ -45,7 +46,11 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 		const { name, value } = e.target;
 		setFormData((prev) => ({
 			...prev,
-			[name]: isNaN(Number(value)) ? value : Number(value)<=0?"":Number(value),
+			[name]: isNaN(Number(value))
+				? value
+				: Number(value) <= 0
+				? ""
+				: Number(value),
 		}));
 	};
 
@@ -54,9 +59,9 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 	};
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
-		if (files&&files.length>0) {
+		if (files && files.length > 0) {
 			setFile(files[0]);
-		}else{
+		} else {
 			setFile(null);
 		}
 	};
@@ -65,32 +70,33 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 		e.preventDefault();
 		setLoading(true);
 
-		if(file){
-			const filename = formData.key + "_"+new Date().getTime() + file.name;
+		if (file) {
+			const filename = formData.key + "_" + new Date().getTime() + file.name;
 
-			const {data , error} = await supabase.storage.from("image-bucket").upload(filename, file);
+			const { data, error } = await supabase.storage
+				.from("image-bucket")
+				.upload(filename, file);
 
-			if(error){
+			if (error) {
 				console.log(error);
 				toast.error("Failed to upload image");
 				setLoading(false);
 				return;
-			}else{
-				const {data : file} = supabase.storage.from("image-bucket").getPublicUrl(filename);
-				if(file){
+			} else {
+				const { data: file } = supabase.storage
+					.from("image-bucket")
+					.getPublicUrl(filename);
+				if (file) {
 					formData.product_image = file?.publicUrl;
 					toast.success("Image uploaded please wait ....");
 					console.log(file.publicUrl);
-				}else{
+				} else {
 					toast.error("Failed to get image url");
 					setLoading(false);
 					return;
 				}
-				
 			}
 		}
-
-
 
 		try {
 			const token = localStorage.getItem("token");
@@ -122,6 +128,14 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
+			{/* Barcode */}
+			<Input
+				name="barcode"
+				value={formData.barcode}
+				onChange={handleChange}
+				placeholder="Product Barcode"
+				className="w-full"
+			/>
 			{/* Key */}
 			<Input
 				name="key"
@@ -208,7 +222,7 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 				required
 				className="w-full"
 			/>
-			
+
 			{/* Default Cost Price */}
 			<Input
 				name="default_cost"
@@ -233,14 +247,17 @@ export default function ProductForm({ product, onSuccess }: ProductFormProps) {
 					<SelectItem value="active">Active</SelectItem>
 					<SelectItem value="discontinued">Discontinued</SelectItem>
 				</SelectContent>
-			</Select>		
+			</Select>
 
 			{/* Product Image file */}
 			<div className="grid w-full max-w-sm items-center gap-1.5 relative">
 				<Label htmlFor="picture">Picture</Label>
-				<Input id="picture" type="file"  onChange={handleFileChange}/>				
-				<img src={file?URL.createObjectURL(file):formData.product_image} alt="product" className="h-[40px] w-[40px] absolute right-[-45px] bottom-0"/>
-				
+				<Input id="picture" type="file" onChange={handleFileChange} />
+				<img
+					src={file ? URL.createObjectURL(file) : formData.product_image}
+					alt="product"
+					className="h-[40px] w-[40px] absolute right-[-45px] bottom-0"
+				/>
 			</div>
 
 			{/* Submit Button */}
