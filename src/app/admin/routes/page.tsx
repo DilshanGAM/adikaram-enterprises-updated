@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function AdminRoutePage() {
   const [routes, setRoutes] = useState([]);
@@ -156,6 +157,9 @@ export default function AdminRoutePage() {
                           >
                             Delete
                           </Button>
+                          <Link href={`/admin/shops-arrange?routeName=${route.name}`}>
+                            <Button size="sm">Manage Shops</Button>
+                          </Link>
                         </div>
                       </TableCell>
                     </TableRow>

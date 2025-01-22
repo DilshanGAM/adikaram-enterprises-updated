@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ShopRouteType, ShopType } from "@/types/user";
 
 function ManageShopsInRoutePage() {
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const routeName = searchParams.get("routeName") || "";
   const [shopsInRoute, setShopsInRoute] = useState<ShopRouteType[]>([]);
   const [allShops, setAllShops] = useState<ShopType[]>([]);
@@ -21,8 +21,6 @@ function ManageShopsInRoutePage() {
 
   // Fetch shops in the current route
   useEffect(() => {
-    //get the routeName from url parameters
-
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
@@ -48,13 +46,21 @@ function ManageShopsInRoutePage() {
   // Handle adding a shop to the route
   const handleAddShop = () => {
     if (selectedShop) {
-      const shop:ShopType|undefined = allShops.find((shop:ShopType) => shop.name === selectedShop);
-      if (shop && !shopsInRoute.some((s:ShopRouteType) => s.shop_name === shop.name)) {
-        setShopsInRoute((prev) => [...prev, { shop_name: shop.name, order: prev.length + 1, route_name: routeName }]);
+      const shop = allShops.find((shop) => shop.name === selectedShop);
+      if (shop && !shopsInRoute.some((s) => s.shop_name === shop.name)) {
+        setShopsInRoute((prev) => [
+          ...prev,
+          { shop_name: shop.name, order: prev.length + 1, route_name: routeName },
+        ]);
       } else {
         toast.error("Shop is already in the route");
       }
     }
+  };
+
+  // Handle removing a shop from the route
+  const handleRemoveShop = (shopName: string) => {
+    setShopsInRoute((prev) => prev.filter((shop) => shop.shop_name !== shopName));
   };
 
   // Handle drag-and-drop reordering
@@ -78,9 +84,13 @@ function ManageShopsInRoutePage() {
     const token = localStorage.getItem("token");
     setLoading(true);
     try {
-      await axios.put(`/api/route/shops?routeName=${routeName}`, { shops: shopsInRoute }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `/api/route/shops?routeName=${routeName}`,
+        { shops: shopsInRoute },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       toast.success("Route updated successfully!");
       router.push("/admin/routes"); // Redirect to routes page
     } catch (err: any) {
@@ -115,11 +125,7 @@ function ManageShopsInRoutePage() {
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId="shops">
           {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="space-y-2"
-            >
+            <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
               {shopsInRoute.map((shop, index) => (
                 <Draggable key={shop.shop_name} draggableId={shop.shop_name} index={index}>
                   {(provided) => (
@@ -127,10 +133,21 @@ function ManageShopsInRoutePage() {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="p-4 bg-gray-100 rounded-md flex justify-between items-center"
+                      className="flex items-center justify-between p-4 bg-white shadow-md rounded-lg"
                     >
-                      <span>{shop.shop_name}</span>
-                      <span>Order: {shop.order}</span>
+                      <div>
+                        <p className="font-semibold">{shop.shop_name}</p>
+                        <p className="text-sm text-gray-500">Order: {shop.order}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveShop(shop.shop_name)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </Draggable>
@@ -152,9 +169,9 @@ function ManageShopsInRoutePage() {
 }
 
 export default function RouteNameWrapper() {
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <ManageShopsInRoutePage />
-      </Suspense>
-    );
-  }
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ManageShopsInRoutePage />
+    </Suspense>
+  );
+}
