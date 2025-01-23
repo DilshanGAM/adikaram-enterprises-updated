@@ -46,7 +46,7 @@ export default function LoadedVisitScreen({
 				<OopsPage message="Failed to load shops" />
 			)}
 			{shopsLoadStatus === "loaded" && (
-				<div className="w-full flex flex-col  justify-center space-y-4">
+				<div className="w-full flex flex-col items-center space-y-4">
 					{shops.map((shop, index) => (
 						<StaffShopCard key={index} shop={shop} />
 					))}
