@@ -40,7 +40,7 @@ export default function LoadedVisitScreen({
 	});
 
 	return (
-		<div className="w-full h-full max-h-full flex items-center justify-center overflow-y-scroll">
+		<div className="w-full h-full max-h-full flex items-center  overflow-y-scroll">
 			{shopsLoadStatus === "loading" && <Loading />}
 			{shopsLoadStatus === "error" && (
 				<OopsPage message="Failed to load shops" />
