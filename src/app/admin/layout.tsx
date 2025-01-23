@@ -123,12 +123,11 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label, isOpen, link }) => {
-	
 	const pathname = usePathname();
 	let isActive = false;
-	if(link === "/admin"){
+	if (link === "/admin") {
 		isActive = pathname === link;
-	}else{
+	} else {
 		isActive = pathname.includes(link);
 	}
 

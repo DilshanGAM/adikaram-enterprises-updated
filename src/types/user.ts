@@ -54,3 +54,17 @@ export interface ShopRouteType{
     route_name: string;
     shop_name: string;
 }
+
+export interface RouteType{
+    name: string;
+    description: string;
+    distance: number;
+}
+
+export interface VisitType{
+    visited_by: string;
+    route_name: string;
+    status: string;
+    date: Date;
+    visit_id: number;
+}

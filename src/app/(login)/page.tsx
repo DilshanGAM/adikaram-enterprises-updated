@@ -29,6 +29,7 @@ export default function LoginPage() {
             setLoading(false);
             if(res.data.user.role === "admin") router.push("/admin");
             if(res.data.user.role === "manager") router.push("/admin");
+			if(res.data.user.role === "staff") router.push("/staff");
         }).catch((err) => {
             toast.error(err.response?.data?.message || "Failed to login");
             setLoading(false);
