@@ -19,7 +19,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { BatchType, InvoiceType, ProductType } from "@/types/user";
+import {
+	BatchType,
+	FreeItemType,
+	InvoiceItemType,
+	InvoiceType,
+	ProductType,
+} from "@/types/user";
 import { ProductFinder } from "./productFinder";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -27,6 +33,9 @@ import toast from "react-hot-toast";
 export default function ProductAddingModal(props: {
 	setInvoice: React.Dispatch<React.SetStateAction<InvoiceType>>;
 	invoice: InvoiceType;
+	isFreeIssue: boolean;
+    setSummaryResetter : React.Dispatch<React.SetStateAction<boolean>>;
+    summaryResetter: boolean;
 }) {
 	const [product, setProduct] = useState<ProductType | null>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
@@ -38,8 +47,9 @@ export default function ProductAddingModal(props: {
 	const [loose, setLoose] = useState(0);
 	const [uom, setUom] = useState(0);
 	const [price, setPrice] = useState(0);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-	async function loadBatches(key:string) {
+	async function loadBatches(key: string) {
 		const token = localStorage.getItem("token");
 		setBatchListLoadingStatus("loading");
 		try {
@@ -71,7 +81,8 @@ export default function ProductAddingModal(props: {
 				return;
 			}
 			// Check if product price is higher than batch price
-			if (selectedBatch.cost < price) {
+
+			if (!props.isFreeIssue && selectedBatch.cost < price) {
 				toast.error("Price is lower than batch cost");
 				return;
 			}
@@ -84,31 +95,76 @@ export default function ProductAddingModal(props: {
 				return;
 			}
 			// Check if product price is higher than product cost
-			if (product?.default_cost && product.default_cost < price) {
+			if (
+				!props.isFreeIssue &&
+				product?.default_cost &&
+				product.default_cost < price
+			) {
 				toast.error("Price is lower than product cost");
 				return;
 			}
 			// Add to invoice
 		}
+		const newInvoice = { ...props.invoice };
+		if (!props.isFreeIssue) {
+			const item: InvoiceItemType = {
+				id: -99,
+				invoice_id: -99,
+				product_key: product?.key || "",
+				batch_id: selectedBatch?.batch_id || -99,
+				uom: uom,
+				packs: packs,
+				loose: loose,
+				quantity: packs * uom + loose,
+				price: price,
+			};
+			//copy invoice to const newInvoice
+
+			if (newInvoice.items) {
+				newInvoice.items.push(item);
+			} else {
+				newInvoice.items = [item];
+			}
+		}else{
+            const freeItem:FreeItemType = {
+                id: -99,
+                invoice_id: -99,
+                product_key: product?.key || "",
+                batch_id: selectedBatch?.batch_id || -99,
+                uom: uom,
+                packs: packs,
+                loose: loose,
+                quantity: packs * uom + loose,
+            }
+            if(newInvoice.freeItems){
+                newInvoice.freeItems.push(freeItem);
+            }else{
+                newInvoice.freeItems = [freeItem];
+            }
+        }
+		props.setInvoice(newInvoice);
+		setProduct(null);
+		setSelectedBatch(null);
+		setPacks(0);
+		setLoose(0);
+		//close dialog
+		setIsDialogOpen(false);
+        props.setSummaryResetter(!props.summaryResetter);
+		toast.success("Item added to invoice");
 	};
 
 	return (
 		<>
 			<ProductFinder
-				
-				openView={async (product:ProductType) => {
-                    setProduct(product);
-                    setUom(product.uom);
+				openView={async (product: ProductType) => {
+					setProduct(product);
+					setUom(product.uom);
 					loadBatches(product.key);
-					console.log(buttonRef?.current?.click());
+					setIsDialogOpen(true);
 				}}
 			/>
-			<Dialog>
-				<DialogTrigger asChild>
-					<Button className="hidden" ref={buttonRef}>
-						Add Product
-					</Button>
-				</DialogTrigger>
+			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+				<DialogTrigger asChild></DialogTrigger>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Add New Product</DialogTitle>
@@ -139,13 +195,19 @@ export default function ProductAddingModal(props: {
 										<SelectValue placeholder="Select Batch" />
 									</SelectTrigger>
 									<SelectContent>
+										<SelectItem value="0">No batch</SelectItem>
 										{batchList.map((batch) => (
 											<SelectItem
 												key={batch.batch_id}
 												value={batch.batch_id.toString()}
 											>
-												Batch ID: {batch.batch_id} - Remaining:{" "}
-												{batch.remaining}
+												<div>
+													<p>{batch.batch_id}</p>
+													<p>{new Date(batch.exp).toDateString()}</p>
+													<p>{new Date(batch.mfd).toDateString()}</p>
+													<p>{batch.cost}</p>
+													<p>{batch.remaining}</p>
+												</div>
 											</SelectItem>
 										))}
 									</SelectContent>

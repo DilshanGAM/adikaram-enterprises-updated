@@ -122,4 +122,5 @@ export interface FreeItemType{
     uom: number;
     packs: number;
     loose: number;
+    quantity: number;
 }
