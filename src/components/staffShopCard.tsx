@@ -3,6 +3,7 @@ import { ShopRouteType, ShopType } from "@/types/user";
 import OopsPage from "./OopsPage";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function StaffShopCard({shop}: {shop: ShopRouteType}){
     const [shopLoadStatus, setShopLoadStatus] = useState("loading");//loading, loaded, error
@@ -23,7 +24,7 @@ export default function StaffShopCard({shop}: {shop: ShopRouteType}){
         }
     });
     return(
-        <div className="w-[200px]  flex items-center justify-center ">
+        <Link href={"/staff/billUI?shopName="+shop.shop_name} className="w-[200px]  flex items-center justify-center ">
             {shopLoadStatus === "loading" && <p>Loading...</p>}
             {shopLoadStatus === "error" && <OopsPage message="Failed to load shop"/>}
             {shopLoadStatus === "loaded" && (
@@ -33,6 +34,6 @@ export default function StaffShopCard({shop}: {shop: ShopRouteType}){
                     <p>{shopData?.phone}</p>
                 </div>
             )}
-        </div>
+        </Link>
     )
 }

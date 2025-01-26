@@ -10,6 +10,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_PRISMA_SHADOW_URL")  
 }
 
 model user {
@@ -163,6 +164,7 @@ model free_item {
   invoice      invoice  @relation(fields: [invoice_id], references: [id])
   product      product  @relation(fields: [product_key], references: [key])
   batch        batch?   @relation(fields: [batch_id], references: [batch_id])
+  returns      return_bill_item[]
 }
 
 model return_bill {
@@ -190,12 +192,14 @@ model return_bill_item {
   quantity        Int
   price           Float
   invoice_item_id Int?
+  invoice_free_item_id Int?
   invoice         Int?
   reason          String    @default("expired")
   return_bill     return_bill @relation(fields: [return_bill_id], references: [id])
   product         product    @relation(fields: [product_key], references: [key])
   batch           batch?     @relation(fields: [batch_id], references: [batch_id])
   invoice_item    invoice_item? @relation(fields: [invoice_item_id], references: [id])
+  free_item      free_item? @relation(fields: [invoice_free_item_id], references: [id])
   invoice_ref     invoice?   @relation(fields: [invoice], references: [id])
 }
 

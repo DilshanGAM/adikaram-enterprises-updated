@@ -25,17 +25,22 @@ export interface ProductType{
 export interface BatchType{
     batch_id: number;
     product_key: string;
-    uom : number;
+    product: ProductType;
+    uom: number;
     packs: number;
     loose: number;
-    mfd:Date;
-    exp:Date;
+    mfd: Date;
+    exp: Date;
     cost: number;
     labeled_price: number;
     purchase_invoice_id: string;
     date: Date;
-    addedBy: string;
+    added_by: string;
+    status: string;
+    remaining: number;
+    in_count: number;
 }
+
 //shop
 export interface ShopType{
     name: string;
@@ -67,4 +72,54 @@ export interface VisitType{
     status: string;
     date: Date;
     visit_id: number;
+}
+/*
+model invoice_item {
+  id           Int       @id @default(autoincrement())
+  invoice_id   Int
+  product_key  String
+  batch_id     Int?
+  uom          Int
+  packs        Int
+  loose        Int
+  quantity     Int
+  price        Float
+}
+*/
+export interface InvoiceItemType{
+    id: number;
+    invoice_id: number;
+    product_key: string;
+    batch_id: number;
+    uom: number;
+    packs: number;
+    loose: number;
+    quantity: number;
+    price: number;
+}
+
+
+export interface InvoiceType{
+    id?: number;
+    shop_name: string;
+    date?: Date;
+    visit_id: number;
+    discount?: number;
+    delivered_date?: Date;
+    type: string;
+    status: string;
+    tax: number;
+    items? : InvoiceItemType[];
+    freeItems? : FreeItemType[];
+}
+
+
+export interface FreeItemType{
+    id: number;
+    invoice_id: number;
+    product_key: string;
+    batch_id: number;
+    uom: number;
+    packs: number;
+    loose: number;
 }

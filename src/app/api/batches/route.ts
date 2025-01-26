@@ -113,6 +113,18 @@ export async function POST(req: NextRequest) {
                 added_by: user.email,
             },
         });
+        //update product qty
+        const product = await prisma.product.findUnique({
+            where: { key:product_key },
+        });
+        if (product) {
+            await prisma.product.update({
+                where: { key: product_key },
+                data: {
+                    stock: product.stock + (packs * uom + loose),
+                },
+            });
+        }
 
         return NextResponse.json({ message: "Batch created successfully", batch });
     } catch (e: any) {
@@ -152,6 +164,17 @@ export async function PUT(req: NextRequest) {
             purchase_invoice_id,
         } = body;
 
+        const previousBatch = await prisma.batch.findUnique({
+            where: { batch_id: parseInt(batchId) },
+        });
+        if (!previousBatch) {
+            return createErrorResponse(
+                "Batch not found",
+                252706,
+                `No batch found with ID: ${batchId}`,
+                404
+            );
+        }
         const batch = await prisma.batch.update({
             where: { batch_id: parseInt(batchId) },
             data: {
@@ -167,6 +190,19 @@ export async function PUT(req: NextRequest) {
                 added_by: user.email,
             },
         });
+
+        //update product stock
+        const product = await prisma.product.findUnique({
+            where: { key:product_key },
+        });
+        if (product) {
+            await prisma.product.update({
+                where: { key: product_key },
+                data: {
+                    stock: product.stock - (previousBatch.packs * previousBatch.uom + previousBatch.loose) + (packs * uom + loose),
+                },
+            });
+        }
 
         return NextResponse.json({ message: "Batch updated successfully", batch });
     } catch (e: any) {
