@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import Time from "@/components/time";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import {
 import { InvoiceType } from "@/types/user";
 import BillSummary from "@/components/billSummary";
 
-export default function BillUI() {
+function BillUI() {
 	const searchParams = useSearchParams();
 	const shopName = searchParams.get("shopName");
 	const [summaryResetter, setSummaryResetter] = useState<boolean>(false);
@@ -193,4 +193,11 @@ export default function BillUI() {
 			<BillSummary billSummary={billSummary} setInvoice={setInvoice} invoice={invoice} setSummaryResetter={setSummaryResetter} summaryResetter={summaryResetter} />
 		</div>
 	);
+}
+export default function RouteNameWrapper() {
+  return (
+	<Suspense fallback={<div>Loading...</div>}>
+	  <BillUI />
+	</Suspense>
+  );
 }
