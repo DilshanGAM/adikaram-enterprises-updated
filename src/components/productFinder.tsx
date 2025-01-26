@@ -78,7 +78,7 @@ export function ProductFinder({  openView }: any) {
 					<CommandList>
 						{productListLoaded ? (
 							<>
-								<CommandEmpty>No Users found.</CommandEmpty>
+								<CommandEmpty>No products found</CommandEmpty>
 								<CommandGroup>
 									{productsList.map((product) => (
 										<CommandItem

@@ -226,8 +226,9 @@ export default function ProductAddingModal(props: {
 								/>
 								<Label>Price</Label>
 								<Input
-									type="number"
-									value={price}
+									type={!props.isFreeIssue?"number":"text"}
+                                    disabled={props.isFreeIssue}
+									value={!props.isFreeIssue?price:"Free Issue"}
 									onChange={(e) => setPrice(parseFloat(e.target.value))}
 								/>
 							</>
