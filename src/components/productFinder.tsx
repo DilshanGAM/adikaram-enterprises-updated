@@ -22,10 +22,9 @@ import axios from "axios";
 import { useState } from "react";
 import { ProductType, UserType } from "@/types/user";
 
-export function ProductFinder({ val, onChange , openView }: any) {
-	val = val || "";
+export function ProductFinder({  openView }: any) {
 	const [open, setOpen] = useState(false);
-	const [value, setValue] = useState(val);
+	const [value, setValue] = useState("");
 	const [productsList, setProductList] = useState<ProductType[]>([]);
 	const [productListLoaded, setProductListLoaded] = useState(false);
 
@@ -87,9 +86,8 @@ export function ProductFinder({ val, onChange , openView }: any) {
 											value={product.key}
 											onSelect={() => {
 												setValue(product.key);
-												onChange(product.key , product);
 												setOpen(false);
-                                                openView();
+                                                openView(product);
 											}}
 										>
 											<Check
