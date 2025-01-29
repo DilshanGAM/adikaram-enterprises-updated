@@ -73,19 +73,6 @@ export interface VisitType{
     date: Date;
     visit_id: number;
 }
-/*
-model invoice_item {
-  id           Int       @id @default(autoincrement())
-  invoice_id   Int
-  product_key  String
-  batch_id     Int?
-  uom          Int
-  packs        Int
-  loose        Int
-  quantity     Int
-  price        Float
-}
-*/
 export interface InvoiceItemType{
     id: number;
     invoice_id: number;

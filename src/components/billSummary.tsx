@@ -3,6 +3,8 @@
 import React from "react";
 import { DiscountModal } from "./discountModal";
 import { InvoiceType } from "@/types/user";
+import { Button } from "./ui/button";
+import axios from "axios";
 
 export default function BillSummary({
 	billSummary,
@@ -17,6 +19,15 @@ export default function BillSummary({
 	setSummaryResetter: any;
 	summaryResetter: any;
 }) {
+	async function saveBill(){
+		const token = localStorage.getItem("token");
+		const res = await axios.post("/api/invoicing", invoice, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		console.log(res);
+	}
 	return (
 		<div className="w-full flex flex-col items-center space-y-4">
 			<h1 className="text-2xl font-bold text-pepsiBlue">Bill Summary</h1>
@@ -37,6 +48,7 @@ export default function BillSummary({
 						Total Price: {billSummary.totalPrice.toFixed(2)}
 					</h1>
 				</div>
+				<Button onClick={saveBill}>Print Bill</Button>
 			</div>
 		</div>
 	);

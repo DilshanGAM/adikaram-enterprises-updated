@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-const prisma = new PrismaClient();
+
 
 /**
  * Utility function for error responses
@@ -111,6 +111,7 @@ export async function POST(req: NextRequest) {
                 labeled_price,
                 purchase_invoice_id,
                 added_by: user.email,
+                remaining: packs * uom + loose,
             },
         });
         //update product qty

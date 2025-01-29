@@ -132,6 +132,8 @@ export default function BatchAdminPage() {
                   <TableHead>UOM</TableHead>
                   <TableHead>Packs</TableHead>
                   <TableHead>Loose</TableHead>
+                  <TableHead>Qty</TableHead>
+                  <TableHead>Remaining</TableHead>
                   <TableHead>MFD</TableHead>
                   <TableHead>EXP</TableHead>
                   <TableHead>Cost</TableHead>
@@ -147,6 +149,8 @@ export default function BatchAdminPage() {
                       <TableCell>{batch.uom}</TableCell>
                       <TableCell>{batch.packs}</TableCell>
                       <TableCell>{batch.loose}</TableCell>
+                      <TableCell>{batch.packs * batch.uom + batch.loose}</TableCell>
+                      <TableCell>{batch.remaining}</TableCell>
                       <TableCell>{new Date(batch.mfd).toDateString()}</TableCell>
                       <TableCell>{new Date(batch.exp).toDateString()}</TableCell>
                       <TableCell>{batch.cost}</TableCell>

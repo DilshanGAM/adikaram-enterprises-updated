@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -38,7 +38,6 @@ export default function ProductAddingModal(props: {
     summaryResetter: boolean;
 }) {
 	const [product, setProduct] = useState<ProductType | null>(null);
-	const buttonRef = useRef<HTMLButtonElement>(null);
 	const [batchList, setBatchList] = useState<BatchType[]>([]);
 	const [batchListLoadingStatus, setBatchListLoadingStatus] =
 		useState("loading"); // loading, loaded, error
@@ -76,7 +75,14 @@ export default function ProductAddingModal(props: {
 			// Check if quantity is available in the batch
 			const batchQty = selectedBatch.remaining;
 			const quantity = packs * uom + loose;
-			if (quantity > batchQty) {
+			//currently added quatity of the product in the invoice from the given batch\
+			let addedQty = 0
+			props.invoice.items?.forEach((item)=>{
+				if(item.batch_id === selectedBatch.batch_id){
+					addedQty += item.quantity;
+				}
+			})
+			if (quantity+addedQty > batchQty) {
 				toast.error("Quantity not available in batch");
 				return;
 			}
@@ -90,7 +96,13 @@ export default function ProductAddingModal(props: {
 		} else {
 			const productQty = product?.stock || 0;
 			const quantity = packs * uom + loose;
-			if (quantity > productQty) {
+			let addedQty = 0
+			props.invoice.items?.forEach((item)=>{
+				if(item.product_key === product?.key){
+					addedQty += item.quantity;
+				}
+			})
+			if (quantity+addedQty > productQty) {
 				toast.error("Quantity not available in stock");
 				return;
 			}
