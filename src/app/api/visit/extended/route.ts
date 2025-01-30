@@ -69,6 +69,8 @@ export async function GET(req:NextRequest){
                 for (const item of items) {
                     total += item.price * item.quantity;
                 }
+                //discount
+                total -= invoice.discount;
                 details.bills.push({invoice,total});
             }
             details.summary.billCount = details.bills.length;
