@@ -109,6 +109,3 @@ export async function GET(req:NextRequest){
 
     }
 }
-export function calculateBillTotal(bill:any){
-    
-}
