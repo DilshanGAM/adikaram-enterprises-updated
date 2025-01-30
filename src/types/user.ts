@@ -65,13 +65,15 @@ export interface RouteType{
     description: string;
     distance: number;
 }
-
 export interface VisitType{
-    visited_by: string;
+    id: number;
     route_name: string;
+    visited_by: string;
+    start_time: Date;
+    end_time?: Date;
+    confirmed_by?: string;
     status: string;
-    date: Date;
-    visit_id: number;
+    notes?: string;
 }
 export interface InvoiceItemType{
     id: number;

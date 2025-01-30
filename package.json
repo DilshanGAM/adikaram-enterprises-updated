@@ -23,6 +23,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
+		"date-fns": "^4.1.0",
 		"framer-motion": "^11.13.1",
 		"jose": "^5.9.6",
 		"lucide-react": "^0.468.0",
@@ -38,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.2",
+		"@types/date-fns": "^2.5.3",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-beautiful-dnd": "^13.1.8",
