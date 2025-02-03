@@ -21,6 +21,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 export default function VisitDetailsModal({
     visit,
@@ -118,7 +119,8 @@ function BillsContent({ bills }: { bills: any[] }) {
                             <TableRow key={index}>
                                 <TableCell>{bill.invoice.id}</TableCell>
                                 <TableCell>{new Date(bill.invoice.date).toLocaleDateString()}</TableCell>
-                                <TableCell>${bill.total.toFixed(2)}</TableCell>
+                                <TableCell>{bill.total.toFixed(2)}</TableCell>
+                                <TableCell><a href={"/bill?billId="+bill.invoice.id} target="_blank" ><IoIosInformationCircleOutline /></a></TableCell>
                             </TableRow>
                         ))
                     ) : (
@@ -154,7 +156,7 @@ function PaymentsContent({ payments }: { payments: any[] }) {
                             <TableRow key={index}>
                                 <TableCell>{payment.id}</TableCell>
                                 <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
-                                <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                                <TableCell>{payment.amount.toFixed(2)}</TableCell>
                                 <TableCell>{payment.type}</TableCell>
                             </TableRow>
                         ))
@@ -181,19 +183,19 @@ function SummaryContent({ summary }: { summary: any }) {
                     <span className="font-semibold">Total Bills:</span> {summary.billCount}
                 </p>
                 <p>
-                    <span className="font-semibold">Total Bill Amount:</span> ${summary.billTotal.toFixed(2)}
+                    <span className="font-semibold">Total Bill Amount:</span> {summary.billTotal.toFixed(2)}
                 </p>
                 <p>
                     <span className="font-semibold">Total Payments:</span> {summary.paymentCount}
                 </p>
                 <p>
-                    <span className="font-semibold">Total Payment Amount:</span> ${summary.paymentTotal.toFixed(2)}
+                    <span className="font-semibold">Total Payment Amount:</span> {summary.paymentTotal.toFixed(2)}
                 </p>
                 <p>
                     <span className="font-semibold">Total Return Bills:</span> {summary.returnBillCount}
                 </p>
                 <p>
-                    <span className="font-semibold">Total Return Bill Amount:</span> ${summary.returnBillTotal.toFixed(2)}
+                    <span className="font-semibold">Total Return Bill Amount:</span> {summary.returnBillTotal.toFixed(2)}
                 </p>
             </div>
         </div>

@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { VisitType } from "@/types/user";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
