@@ -4,7 +4,7 @@ import Loading from "@/components/loading";
 import OopsPage from "@/components/OopsPage";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
     Table,
     TableBody,
@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IoPrintSharp } from "react-icons/io5";
 import { generateInvoicePDF } from "@/lib/generateInvoicePDF";
 
-export default function BillPage() {
+function BillPage() {
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
     const [data, setData] = useState<any>(null);
     const searchParams = useSearchParams();
@@ -186,4 +186,11 @@ export default function BillPage() {
             </Card>
         </div>
     );
+}
+export default function RouteNameWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+        <BillPage />
+    </Suspense>
+  );
 }
