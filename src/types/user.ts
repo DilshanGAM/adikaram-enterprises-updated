@@ -100,6 +100,10 @@ export interface InvoiceType{
     tax: number;
     items? : InvoiceItemType[];
     freeItems? : FreeItemType[];
+    shop?: ShopType;
+    visit?: VisitType;
+    returns?: InvoiceItemType[];
+
 }
 
 
