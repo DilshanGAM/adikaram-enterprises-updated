@@ -216,4 +216,5 @@ model payment {
   invoice         invoice   @relation(fields: [invoice_id], references: [id])
   shop            shop      @relation(fields: [shop_name], references: [name])
   visit           visit?    @relation(fields: [visit_id], references: [id])
+  value          Float
 }
