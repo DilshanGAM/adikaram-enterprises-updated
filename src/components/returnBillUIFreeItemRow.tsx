@@ -1,18 +1,11 @@
 "use client";
-import { useState } from "react";
-import { Input } from "./ui/input";
-import { TableCell, TableRow } from "./ui/table";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectLabel,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 
-export default function ItemRow({ item, index,setInvoiceItems , invoiceItems }: { item: any; index: number; setInvoiceItems: any; invoiceItems: any[] }) {
+
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
+import { TableCell, TableRow } from "./ui/table";
+
+export default function FreeItemRow({ item, index,setInvoiceItems , invoiceItems }: { item: any; index: number; setInvoiceItems: any; invoiceItems: any[] }) {
 
   
 	function handleSelectChange() {
@@ -80,7 +73,7 @@ export default function ItemRow({ item, index,setInvoiceItems , invoiceItems }: 
 						<Input className="w-20" disabled={!item.selected} value={item.price} onChange={handlePriceChange} type="number" />
 					</TableCell>
 					<TableCell>
-						<Select 
+						<Select
                        
                         disabled={!item.selected}
                         value={

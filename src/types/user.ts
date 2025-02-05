@@ -166,21 +166,19 @@ export interface ReturnBillItemType{
     return_bill_id: number;
     product_key: string;
     batch_id?: number;
-    uom: number;
-    packs: number;
-    loose: number;
     quantity: number;
     price: number;
     invoice_item_id?: number;
     invoice_free_item_id?: number;
     reason: string;
-    return_bill: ReturnBillType;
-    product: ProductType;
+    return_bill?: ReturnBillType;
+    product?: ProductType;
     batch?: BatchType;
     invoice_item?: InvoiceItemType;
     free_item?: FreeItemType;
     invoice_ref?: InvoiceType;
 }
+
 export interface ReturnBillType{
     id: number;
     shop_name: string;
@@ -189,9 +187,11 @@ export interface ReturnBillType{
     returned_date?: Date;
     status: string;
     deductions: number;
+    value : number;
+    items_cost : number;
     covered_in?: number;
     items: ReturnBillItemType[];
     payments: PaymentType[];
-    shop: ShopType;
+    shop?: ShopType;
 }
 

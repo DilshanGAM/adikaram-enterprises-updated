@@ -175,6 +175,8 @@ model return_bill {
   returned_date  DateTime?
   status         String    @default("not-covered")
   deductions     Float     @default(0)
+  value          Float
+  items_cost     Float
   covered_in     Int?
   items          return_bill_item[]
   payment        payment[]
@@ -186,9 +188,6 @@ model return_bill_item {
   return_bill_id  Int
   product_key     String
   batch_id        Int?
-  uom             Int
-  packs           Int
-  loose           Int
   quantity        Int
   price           Float
   invoice_item_id Int?
