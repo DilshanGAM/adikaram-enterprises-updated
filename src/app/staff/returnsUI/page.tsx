@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import ReturnBillSummary from "@/components/returnBillSummary";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function ReturnsUIPage() {
 	const searchParams = useSearchParams();
@@ -52,6 +54,7 @@ function ReturnsUIPage() {
 		const updatedItems = [...returnBill.items];
 		updatedItems.splice(index, 1);
 		setReturnBill({ ...returnBill, items: updatedItems });
+    recalculate();
 	};
 
 	if (shopName == "") {
@@ -63,7 +66,22 @@ function ReturnsUIPage() {
 	}
 
   function handleSaveReturnBill(){
-    console.log(returnBill);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+    axios
+      .post("/api/returnInvoicing", returnBill, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log(response.data);
+        toast.success("Return Bill Saved");
+      }).catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.message);
+      });
   }
 
 	return (
@@ -113,7 +131,7 @@ function ReturnsUIPage() {
 					</TableBody>
 				</Table>
         <ReturnBillSummary returnBill={returnBill} setReturnBill={setReturnBill} />
-        <Button className="w-[448px]" onClick={() => console.log(returnBill)}>Save Return Bill</Button>
+        <Button className="w-[448px]" onClick={handleSaveReturnBill}>Save Return Bill</Button>
 			</div>
 		</div>
 	);
