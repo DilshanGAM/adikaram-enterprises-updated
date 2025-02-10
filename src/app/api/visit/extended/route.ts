@@ -90,15 +90,7 @@ export async function GET(req:NextRequest){
                 }
             });
             for (const returnBill of returnBills) {
-                const items = await prisma.return_bill_item.findMany({
-                    where: {
-                        return_bill_id: returnBill.id
-                    }
-                });
-                let total = 0;
-                for (const item of items) {
-                    total += item.price * item.quantity;
-                }
+                let total = returnBill.value;                
                 details.returnBills.push({returnBill,total});
             }
             details.summary.returnBillCount = details.returnBills.length;
