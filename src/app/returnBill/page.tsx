@@ -171,8 +171,8 @@ function ReturnBillPage() {
 				</CardHeader>
 				<CardContent>
 					<div className="grid grid-cols-2 gap-4">
-                        <p><span className="font-semibold">Total Amount:</span>{returnBill.items_cost.toFixed(2)}</p>
-                        <p><span className="font-semibold">Deductions:</span> {returnBill.deductions.toFixed(2)}</p>
+                        <p><span className="font-semibold">Total Amount: </span>{returnBill.items_cost.toFixed(2)}</p>
+                        <p><span className="font-semibold">Deductions: </span> {returnBill.deductions.toFixed(2)}</p>
                         <p className="text-lg font-semibold"><span className="font-bold">Net Return Total:</span> {returnBill.value.toFixed(2)}</p> 
 					</div>
 				</CardContent>
