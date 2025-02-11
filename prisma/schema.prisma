@@ -128,7 +128,7 @@ model invoice {
   discount       Float
   delivered_date DateTime?
   type           String    @default("on-delivery")
-  status         String    @default("not-paid")
+  status         String    @default("not-paid")//partially-paid, paid
   tax            Float     @default(0)
   items          invoice_item[]
   free_items     free_item[]

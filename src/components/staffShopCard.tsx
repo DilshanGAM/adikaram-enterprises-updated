@@ -89,9 +89,11 @@ export default function StaffShopCard({ shop }: { shop: ShopRouteType }) {
 							</Link>
 
 							{/* Add Shop Button */}
+							<Link href={`/staff/payments?shopName=${shop.shop_name}`}>
 							<Button variant="outline" className="w-full">
-								Add Shop
+								Payments
 							</Button>
+							</Link>
 						</div>
 					</CardContent>
 				</>
