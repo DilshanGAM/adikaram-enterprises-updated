@@ -8,12 +8,15 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import BillPayModalStaff from "@/components/billPayModalStaff";
 
 function PaymentsPage() {
   const searchParams = useSearchParams();
   const shopName = searchParams.get("shopName") || "";
   const [unpaidBills, setUnpaidBills] = useState<any[]>([]);
   const [status, setStatus] = useState("loading");
+  const [activeBill, setActiveBill] = useState<any>(null);
+  const [payModalOpen, setPayModalOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,7 +40,11 @@ function PaymentsPage() {
           setStatus("error");
         });
     }
-  }, [shopName]);
+  }, [shopName , status]);
+  function handlePayModalOpen(bill: any) {
+    setActiveBill(bill);
+    setPayModalOpen(true);
+  }
 
   return (
     <div className="p-4">
@@ -75,7 +82,7 @@ function PaymentsPage() {
                   <TableCell className="text-end w-24">{totalPaid.toFixed(2)}</TableCell>
                     <TableCell className="text-end w-16">{(value - totalPaid).toFixed(2)}</TableCell>
                   <TableCell>
-                    <Button variant="secondary">Pay</Button>
+                    <Button variant="secondary" onClick={()=>handlePayModalOpen(billData)}>Pay</Button>
                   </TableCell>
                   <TableCell colSpan={5}>
                     <Progress value={progress} className="mt-2" />
@@ -87,6 +94,9 @@ function PaymentsPage() {
           </TableBody>
         </Table>
       )}
+      {activeBill&&
+      <BillPayModalStaff modalOpen={payModalOpen} setModalOpen={setPayModalOpen} bill={activeBill} shopName={shopName} reloadPage = {()=>setStatus("loading")} />}
+      
     </div>
   );
 }

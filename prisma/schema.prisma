@@ -26,6 +26,7 @@ model user {
   batches   batch[]
   visits    visit[]  @relation("visited_by")
   confirmed_visits visit[] @relation("confirmed_by")
+  driver_visits driver_visit[]
 }
 
 model product {
@@ -203,19 +204,33 @@ model return_bill_item {
   free_item      free_item? @relation(fields: [invoice_free_item_id], references: [id])
   invoice_ref     invoice?   @relation(fields: [invoice], references: [id])
 }
-
+model driver_visit{
+  id              Int       @id @default(autoincrement())
+  driver_name     String
+  verified_by     String
+  date           DateTime  @default(now())
+  status         String    @default("processing")//completed
+  notes          String?
+  verified_by_user user      @relation(fields: [verified_by], references: [email])
+  payments       payment[]
+}
 model payment {
   id              Int       @id @default(autoincrement())
   shop_name       String
   date            DateTime  @default(now())
   visit_id        Int?
+  driver_visit_id Int?
   invoice_id      Int
   amount          Float
   type            String    @default("cash")
+  isValid         Boolean   @default(true)
   return_bill_id  Int?
   payment_return_bill return_bill? @relation(fields: [return_bill_id], references: [id])
   invoice         invoice   @relation(fields: [invoice_id], references: [id])
   shop            shop      @relation(fields: [shop_name], references: [name])
   visit           visit?    @relation(fields: [visit_id], references: [id])
-  value          Float
+  driver_visit    driver_visit? @relation(fields: [driver_visit_id], references: [id])
+  notes          String?
 }
+
+
