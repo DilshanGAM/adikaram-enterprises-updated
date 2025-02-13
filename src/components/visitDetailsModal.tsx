@@ -192,6 +192,9 @@ function SummaryContent({ summary }: { summary: any }) {
                     <span className="font-semibold">Total Payment Amount:</span> {summary.paymentTotal.toFixed(2)}
                 </p>
                 <p>
+                    <span className="font-semibold">Cash in Hand:</span> {summary.cashInHand.toFixed(2)}
+                </p>
+                <p>
                     <span className="font-semibold">Total Return Bills:</span> {summary.returnBillCount}
                 </p>
                 <p>

@@ -37,6 +37,7 @@ export async function GET(req:NextRequest){
                     paymentTotal:number,
                     returnBillCount:number,
                     returnBillTotal:number,
+                    cashInHand:number
                 }
             } = {
                 visit : visit,
@@ -50,6 +51,7 @@ export async function GET(req:NextRequest){
                     paymentTotal:0,
                     returnBillCount:0,
                     returnBillTotal:0,
+                    cashInHand:0
                 }
             }
             //get bills
@@ -83,6 +85,12 @@ export async function GET(req:NextRequest){
             details.payments = payments;
             details.summary.paymentCount = payments.length;
             details.summary.paymentTotal = payments.reduce((acc,cur)=>acc+cur.amount,0);
+            details.summary.cashInHand = payments.reduce((acc,cur)=>{
+                if(cur.type === "cash") 
+                return (acc+cur.amount)
+                else
+                return acc;
+            },0);
             //get return bills
             const returnBills = await prisma.return_bill.findMany({
                 where: {
