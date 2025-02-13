@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 					shop_name: invoice.shop_name,
 					visit_id: visitId,
 					notes: body.notes,
-					type: body.return_bill_id ? "return" : "payment",
+					type: body.return_bill_id ? "return" : "cash",
 					invoice_id: invoice.id,
 					driver_visit_id: driverVisitId,
 					return_bill_id: returnBill?.id || null,
