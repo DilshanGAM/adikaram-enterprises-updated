@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 	}
 	try {
 		const returnBill: ReturnBillType = await req.json();
-		console.log(returnBill);
+		
 		if (!returnBill) {
 			return NextResponse.json({ message: "Invalid Request" }, { status: 400 });
 		}

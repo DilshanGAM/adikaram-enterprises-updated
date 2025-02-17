@@ -117,7 +117,7 @@ export default function DriverVisitsPage() {
 							<ul className="list-disc list-inside">
 								{driverVisit.payments.map((payment: any) => (
 									<li key={payment.id}>
-										Payment #{payment.id} - ${payment.amount.toFixed(2)} on{" "}
+										Payment #{payment.id} - {payment.amount.toFixed(2)} on{" "}
 										{new Date(payment.date).toLocaleDateString()}
 									</li>
 								))}
