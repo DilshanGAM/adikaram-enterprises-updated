@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
 	}
 	try {
 		const returnBill: ReturnBillType = await req.json();
+		console.log(returnBill);
 		if (!returnBill) {
 			return NextResponse.json({ message: "Invalid Request" }, { status: 400 });
 		}
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 			const item = returnBill.items[i];
 	
 			if (item.invoice_item_id) {
-				const invoiceItem = await prisma.invoice_item.findFirst({
+				const invoiceItem = await prisma.invoice_item.findUnique({
 					where: {
 						id: item.invoice_item_id,
 					},
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
 				savingReturnBill.items.push(savingItem);
 				itemCost += item.price * item.quantity;
 			} else if (item.invoice_free_item_id) {
-				const invoiceFreeItem = await prisma.free_item.findFirst({
+				const invoiceFreeItem = await prisma.free_item.findUnique({
 					where: {
 						id: item.invoice_free_item_id,
 					},
@@ -185,7 +186,7 @@ export async function POST(req: NextRequest) {
 				//price check
 				//get the product default cost if batch id is not provided
 				if (!item.batch_id) {
-					const product = await prisma.product.findFirst({
+					const product = await prisma.product.findUnique({
 						where: {
 							key: invoiceFreeItem.product_key,
 						},
@@ -201,7 +202,7 @@ export async function POST(req: NextRequest) {
 						);
 					} else {
 						//get the batch
-						const batch = await prisma.batch.findFirst({
+						const batch = await prisma.batch.findUnique({
 							where: {
 								batch_id: item.batch_id,
 							},
@@ -241,7 +242,7 @@ export async function POST(req: NextRequest) {
 					itemCost += item.price * item.quantity;
 				} else {
 					//get the product
-					const product = await prisma.product.findFirst({
+					const product = await prisma.product.findUnique({
 						where: {
 							key: item.product_key,
 						},
@@ -272,6 +273,38 @@ export async function POST(req: NextRequest) {
 					savingReturnBill.items.push(savingItem);
 					itemCost += item.price * item.quantity;
 				}
+			}else{
+				//get the product
+				const product = await prisma.product.findUnique({
+					where: {
+						key: item.product_key,
+					},
+				});
+				if (!product) {
+					throw new Error(item.product_key + " do not exist");
+				}
+				//price check
+				if (item.price > product.default_labeled_price) {
+					throw new Error(
+						"Price of the " +
+							item.product_key +
+							" is more than the original price"
+					);
+				}
+
+				const savingItem: {
+					product_key: string;
+					quantity: number;
+					price: number;
+					reason: string;
+				} = {
+					product_key: item.product_key,
+					quantity: item.quantity,
+					price: item.price,
+					reason: item.reason,
+				};
+				savingReturnBill.items.push(savingItem);
+				itemCost += item.price * item.quantity;
 			}
 		}
         savingReturnBill.items_cost = itemCost;

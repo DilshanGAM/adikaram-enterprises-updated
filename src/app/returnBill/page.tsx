@@ -50,6 +50,7 @@ function ReturnBillPage() {
 	if (status === "error") return <OopsPage message="Something went wrong" />;
 
 	const { returnBill } = data;
+	console.log(returnBill);
 	// const invoiceTotal = invoice.items.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 	// const discountTotal = invoice.discount || 0;
 	// const taxTotal = invoice.tax || 0;
