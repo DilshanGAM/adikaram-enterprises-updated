@@ -46,9 +46,10 @@ export async function POST(req: NextRequest) {
 		}
 		return await prisma.$transaction(
 			async (tx) => {
+				
 				const returnBill = await tx.return_bill.findFirst({
 					where: {
-						id: body.return_bill_id,
+						id: body.return_bill_id||-99,
 					},
 				});
 				if (!returnBill && body.return_bill_id) {

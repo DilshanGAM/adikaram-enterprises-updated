@@ -8,6 +8,7 @@ import {
 	FaRoute,
 	FaSignOutAlt,
 } from "react-icons/fa";
+import { RiMotorbikeFill } from "react-icons/ri";
 import { FaCarSide, FaShop, FaUserGroup } from "react-icons/fa6";
 import { MdWarehouse } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
@@ -90,8 +91,14 @@ export default function AdminLayout({
 					/>
 					<NavItem
 						link="/admin/visits"
-						icon={<FaCarSide />}
+						icon={<RiMotorbikeFill />}
 						label="Visits"
+						isOpen={isOpen}
+					/>
+					<NavItem
+						link="/admin/driver-visits"
+						icon={<FaCarSide />}
+						label="Delivery Visits"
 						isOpen={isOpen}
 					/>
 					<NavItem
