@@ -17,10 +17,10 @@ export default function RootLayout({
     <div className="w-full pt-[75px] relative">
       {/* Navigation Buttons */}
       <div className="flex bg-[#f3f4f6]  py-4 h-[75px]  w-full absolute top-0 left-0 justify-center items-center">
-        <Link href="/admin/visits">
+        <Link href="/admin/driver-visits">
           <button
             className={`px-4 py-2 rounded mx-2 ${
-              isActive("/admin/visits")
+              isActive("/admin/driver-visits")
                 ? "bg-pepsiBlue text-white"
                 : "bg-gray-200 hover:bg-gray-300"
             }`}
@@ -28,10 +28,10 @@ export default function RootLayout({
             Active Visits
           </button>
         </Link>
-        <Link href="/admin/visits/all">
+        <Link href="/admin/driver-visits/all">
           <button
             className={`px-4 py-2 rounded mx-2 ${
-              isActive("/admin/visits/all")
+              isActive("/admin/driver-visits/all")
                 ? "bg-pepsiBlue text-white"
                 : "bg-gray-200 hover:bg-gray-300"
             }`}

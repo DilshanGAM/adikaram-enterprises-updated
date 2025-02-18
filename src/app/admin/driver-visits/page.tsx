@@ -9,6 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/loading";
 import AddDriverPaymentModal from "@/components/addDriverPaymentModal";
+import DriverVisitConfirmModal from "@/components/driverVisitConfimModal";
 
 export default function DriverVisitsPage() {
 	const [driverVisit, setDriverVisit] = useState<any>(null);
@@ -18,6 +19,7 @@ export default function DriverVisitsPage() {
 	const [notes, setNotes] = useState<string>("");
 	const [startVisitLoading, setStartVisitLoading] = useState<boolean>(false);
     const [addPaymentModalOpen, setAddPaymentModalOpen] = useState<boolean>(false);
+	const [finishModalOpen, setFinishModalOpen] = useState<boolean>(false);
 	const reload = () => setResetPointer(!resetPointer);
 
 	useEffect(() => {
@@ -77,7 +79,11 @@ export default function DriverVisitsPage() {
 			{status === "loading" && <Loading />}
 
 			{status === "loaded" && (
-				<Card className="w-full max-w-2xl ">
+				<Card className="w-full max-w-2xl relative">
+					<Button onClick={() => setFinishModalOpen(true)} className="absolute top-2 right-2">
+						Finish Visit
+					</Button>
+					<DriverVisitConfirmModal modalOpen={finishModalOpen} setModalOpen={setFinishModalOpen} reloader={reload} driverVisit={driverVisit}/>
 					<CardHeader>
 						<CardTitle className="text-lg font-bold text-gray-800">
 							Driver Visit Details

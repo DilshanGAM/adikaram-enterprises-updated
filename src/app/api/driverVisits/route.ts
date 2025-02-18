@@ -79,3 +79,43 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 }
+
+export async function PUT(req: NextRequest) {
+    const user = req.headers.get("user");
+    if (!user) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const userObj = JSON.parse(user);
+    //check if user is manager or admin
+    if (userObj.role !== "manager" && userObj.role !== "admin") {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    try {
+        const driverVisit = await prisma.driver_visit.findFirst({
+            where: {
+                verified_by: userObj.email,
+                status: "processing",
+            },
+        });
+        if (!driverVisit) {
+            return NextResponse.json({ message: "No any processing driver visit found" }, { status: 404 });
+        }
+        const data = await req.json();
+        const updatedDriverVisit = await prisma.driver_visit.update({
+            where: {
+                id: driverVisit.id,
+            },
+            data: {
+                status: "completed",
+                notes: data.notes,
+            },
+        });
+        return NextResponse.json({ updatedDriverVisit, message: "Success" });
+    } catch (e:any) {
+        console.log(e);
+        if(e.message){
+            return NextResponse.json({ message: e.message }, { status: 500 });
+        }
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    }
+}
