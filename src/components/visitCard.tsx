@@ -7,12 +7,12 @@ import { VisitType } from "@/types/user";
 import { format } from "date-fns";
 import VisitDetailsModal from "./visitDetailsModal";
 
-export default function VisitCard({ visit }: { visit: VisitType }) {
+export default function VisitCard({ visit , reload }: { visit: VisitType , reload: () => void }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <>
-            <Card className="w-full max-w-md bg-white shadow-lg border rounded-lg relative">
+            <Card className="w-full h-[300px] max-w-md bg-white shadow-lg border rounded-lg relative">
                 <CardHeader>
                     <CardTitle className="text-lg font-bold text-pepsiBlue">
                         Route: {visit.route_name}
@@ -57,7 +57,7 @@ export default function VisitCard({ visit }: { visit: VisitType }) {
             </Card>
 
             {/* Visit Details Modal */}
-            {isModalOpen && <VisitDetailsModal visit={visit} onClose={() => setIsModalOpen(false)} />}
+            {isModalOpen && <VisitDetailsModal visit={visit} onClose={() => setIsModalOpen(false)} reload={reload}/>}
         </>
     );
 }

@@ -91,8 +91,8 @@ export function generateInvoicePDF(invoice: Invoice): void {
             item.product.name,
             item.batch?.batch_id || "N/A",
             item.quantity,
-            `$${item.price.toFixed(2)}`,
-            `$${(item.price * item.quantity).toFixed(2)}`
+            `${item.price.toFixed(2)}`,
+            `${(item.price * item.quantity).toFixed(2)}`
         ]),
     };
     doc.autoTable(itemsTableOptions);
@@ -119,7 +119,7 @@ export function generateInvoicePDF(invoice: Invoice): void {
             body: invoice.payments.map((payment) => [
                 payment.id,
                 new Date(payment.date).toLocaleDateString(),
-                `$${payment.amount.toFixed(2)}`,
+                `${payment.amount.toFixed(2)}`,
                 payment.type
             ]),
         };
@@ -133,11 +133,11 @@ export function generateInvoicePDF(invoice: Invoice): void {
     const netTotal = invoiceTotal - discountTotal + taxTotal;
 
     const finalY = (doc as any).lastAutoTable.finalY;
-    doc.text(`Total Amount: $${invoiceTotal.toFixed(2)}`, 15, finalY + 20);
-    doc.text(`Discount: -$${discountTotal.toFixed(2)}`, 15, finalY + 30);
-    doc.text(`Tax: +$${taxTotal.toFixed(2)}`, 15, finalY + 40);
+    doc.text(`Total Amount: ${invoiceTotal.toFixed(2)}`, 15, finalY + 20);
+    doc.text(`Discount: -${discountTotal.toFixed(2)}`, 15, finalY + 30);
+    doc.text(`Tax: +${taxTotal.toFixed(2)}`, 15, finalY + 40);
     doc.setFont("helvetica", "bold");
-    doc.text(`Net Total: $${netTotal.toFixed(2)}`, 15, finalY + 50);
+    doc.text(`Net Total: ${netTotal.toFixed(2)}`, 15, finalY + 50);
 
     // Save PDF
     doc.save(`Invoice_${invoice.id}.pdf`);
