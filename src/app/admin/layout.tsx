@@ -13,6 +13,8 @@ import { FaCarSide, FaShop, FaUserGroup } from "react-icons/fa6";
 import { MdWarehouse } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import LogoutModal from "@/components/logoutModal";
 
 export default function AdminLayout({
 	children,
@@ -29,7 +31,7 @@ export default function AdminLayout({
 	// Check for token
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		if (!token) router.push("/login");
+		if (!token) router.push("/");
 	}, []);
 
 	return (
@@ -113,13 +115,7 @@ export default function AdminLayout({
 						label="Settings"
 						isOpen={isOpen}
 					/>
-					<NavItem
-						link="/logout"
-						icon={<FaSignOutAlt />}
-						label="Logout"
-						isOpen={isOpen}
-					/>
-
+					<LogoutModal isOpen={isOpen} />
 				</div>
 			</div>
 
@@ -136,7 +132,12 @@ interface NavItemProps {
 	link: string;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, isOpen, link }) => {
+export const NavItem: React.FC<NavItemProps> = ({
+	icon,
+	label,
+	isOpen,
+	link,
+}) => {
 	const pathname = usePathname();
 	let isActive = false;
 	if (link === "/admin") {
