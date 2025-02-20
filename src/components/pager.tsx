@@ -49,7 +49,10 @@ export default function Pager({
 			{/* Next Button */}
 			<Button
 				variant="outline"
-				onClick={() => setPageInfo(pageInfo.page + 1)}
+				onClick={() => setPageInfo(
+					{ ...pageInfo, page: pageInfo.page
+					+ 1 }
+				)}
 				disabled={pageInfo.page === pageInfo.totalPages||pageInfo.totalPages===0}
 			>
 				Next
