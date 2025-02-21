@@ -132,7 +132,7 @@ interface NavItemProps {
 	link: string;
 }
 
-export const NavItem: React.FC<NavItemProps> = ({
+const NavItem: React.FC<NavItemProps> = ({
 	icon,
 	label,
 	isOpen,

@@ -3,9 +3,10 @@ import Loading from "@/components/loading";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { NavItem } from "../admin/layout";
 import { FaCog } from "react-icons/fa";
 import LogoutModal from "@/components/logoutModal";
+import { Link } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function StaffLayout({
 	children,
@@ -77,3 +78,36 @@ export default function StaffLayout({
 		</div>
 	);
 }
+
+interface NavItemProps {
+	icon: React.ReactNode;
+	label: string;
+	isOpen: boolean;
+	link: string;
+}
+const NavItem: React.FC<NavItemProps> = ({
+	icon,
+	label,
+	isOpen,
+	link,
+}) => {
+	const pathname = usePathname();
+	let isActive = false;
+	if (link === "/admin") {
+		isActive = pathname === link;
+	} else {
+		isActive = pathname.includes(link);
+	}
+
+	return (
+		<Link
+			href={link}
+			className={`flex items-center gap-4 px-4 py-2 cursor-pointer ${
+				isActive ? "bg-gray-700 text-white" : "hover:bg-gray-600 text-gray-300"
+			}`}
+		>
+			<div className="text-xl">{icon}</div>
+			{isOpen && <span className="text-sm">{label}</span>}
+		</Link>
+	);
+};
