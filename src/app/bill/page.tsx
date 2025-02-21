@@ -95,8 +95,8 @@ function BillPage() {
                                 <TableCell>{item.product.name}</TableCell>
                                 <TableCell>{item.batch?.batch_id || "N/A"}</TableCell>
                                 <TableCell>{item.quantity}</TableCell>
-                                <TableCell>${item.price.toFixed(2)}</TableCell>
-                                <TableCell>${(item.price * item.quantity).toFixed(2)}</TableCell>
+                                <TableCell>{item.price.toFixed(2)}</TableCell>
+                                <TableCell>{(item.price * item.quantity).toFixed(2)}</TableCell>
                             </TableRow>
                         ))
                     ) : (
@@ -155,7 +155,7 @@ function BillPage() {
                             <TableRow key={index}>
                                 <TableCell>{payment.id}</TableCell>
                                 <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
-                                <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                                <TableCell>{payment.amount.toFixed(2)}</TableCell>
                                 <TableCell>{payment.type}</TableCell>
                             </TableRow>
                         ))
@@ -176,10 +176,10 @@ function BillPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-2 gap-4">
-                        <p><span className="font-semibold">Total Amount:</span> ${invoiceTotal.toFixed(2)}</p>
-                        <p><span className="font-semibold">Discount:</span> -${discountTotal.toFixed(2)}</p>
-                        <p><span className="font-semibold">Tax:</span> +${taxTotal.toFixed(2)}</p>
-                        <p className="text-lg font-semibold"><span className="font-bold">Net Total:</span> ${netTotal.toFixed(2)}</p>
+                        <p><span className="font-semibold">Total Amount:</span> {invoiceTotal.toFixed(2)}</p>
+                        <p><span className="font-semibold">Discount:</span> -{discountTotal.toFixed(2)}</p>
+                        <p><span className="font-semibold">Tax:</span> +{taxTotal.toFixed(2)}</p>
+                        <p className="text-lg font-semibold"><span className="font-bold">Net Total:</span> {netTotal.toFixed(2)}</p>
                     </div>
                 </CardContent>
             </Card>

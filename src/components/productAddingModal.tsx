@@ -88,7 +88,7 @@ export default function ProductAddingModal(props: {
 			}
 			// Check if product price is higher than batch price
 
-			if (!props.isFreeIssue && selectedBatch.cost < price) {
+			if (!props.isFreeIssue && selectedBatch.cost > price) {
 				toast.error("Price is lower than batch cost");
 				return;
 			}
@@ -110,7 +110,7 @@ export default function ProductAddingModal(props: {
 			if (
 				!props.isFreeIssue &&
 				product?.default_cost &&
-				product.default_cost < price
+				product.default_cost > price
 			) {
 				toast.error("Price is lower than product cost");
 				return;

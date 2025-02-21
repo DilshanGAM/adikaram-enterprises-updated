@@ -1,17 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { DiscountModal } from "./discountModal";
 import { InvoiceType } from "@/types/user";
 import { Button } from "./ui/button";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function BillSummary({
 	billSummary,
 	invoice,
-    setInvoice,
-    setSummaryResetter,
-    summaryResetter
+	setInvoice,
+	setSummaryResetter,
+	summaryResetter,
 }: {
 	billSummary: any;
 	invoice: any;
@@ -19,14 +21,26 @@ export default function BillSummary({
 	setSummaryResetter: any;
 	summaryResetter: any;
 }) {
-	async function saveBill(){
+	const [loading, setLoading] = useState(false);
+	const router = useRouter();
+	async function saveBill() {
+		setLoading(true);
 		const token = localStorage.getItem("token");
-		const res = await axios.post("/api/invoicing", invoice, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		console.log(res);
+		try {
+			const res = await axios.post("/api/invoicing", invoice, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setLoading(false);
+			console.log(res);
+			toast.success("Bill saved successfully");
+			router.push("/staff");
+		} catch (err) {
+			setLoading(false);
+			toast.error("Failed to save bill");
+			console.log(err);
+		}
 	}
 	return (
 		<div className="w-full flex flex-col items-center space-y-4">
@@ -38,17 +52,22 @@ export default function BillSummary({
 				<h1 className="text-xl font-bold text-pepsiBlue">
 					Total Free Items: {billSummary.totalFreeItems}
 				</h1>
-                {/* gross total */}
-                <h1 className="text-xl font-bold text-pepsiBlue">
-                    Gross Total: {billSummary.grossTotalPrice.toFixed(2)}
-                </h1>
-                <DiscountModal invoice={invoice} setInvoice={setInvoice} setSummaryResetter={setSummaryResetter} summaryResetter={summaryResetter} />
+				{/* gross total */}
+				<h1 className="text-xl font-bold text-pepsiBlue">
+					Gross Total: {billSummary.grossTotalPrice.toFixed(2)}
+				</h1>
+				<DiscountModal
+					invoice={invoice}
+					setInvoice={setInvoice}
+					setSummaryResetter={setSummaryResetter}
+					summaryResetter={summaryResetter}
+				/>
 				<div className="flex items-center space-x-2">
 					<h1 className="text-xl font-bold text-pepsiBlue">
 						Total Price: {billSummary.totalPrice.toFixed(2)}
 					</h1>
 				</div>
-				<Button onClick={saveBill}>Print Bill</Button>
+				<Button disabled={loading} onClick={saveBill}>Print Bill</Button>
 			</div>
 		</div>
 	);
