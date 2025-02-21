@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaCog } from "react-icons/fa";
 import LogoutModal from "@/components/logoutModal";
-import { Link } from "lucide-react";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function StaffLayout({
 	children,
@@ -14,6 +14,7 @@ export default function StaffLayout({
 	children: React.ReactNode;
 }>) {
 	const [status, setStatus] = useState("loading"); //success, error
+	const router = useRouter();
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (!token) {
@@ -53,20 +54,23 @@ export default function StaffLayout({
 				<Image
 					src="/favicon.png"
 					alt="Adikaram Enterprises Logo"
-					className="bg-white rounded-full p-1 absolute m-1 left-1"
+					className="bg-white rounded-full p-1 absolute m-1 left-1 cursor-pointer"
 					width={50}
 					height={50}
+					onClick={() => router.push("/staff")}
 				/>
 				<h1 className="text-2xl font-bold  mx-auto">Adikaram Enterprises</h1>
-				<NavItem
-					link="/staff/settings"
-					icon={<FaCog />}
-					label="Settings"
-					isOpen={false}
-				/>
-                <div>
-                <LogoutModal isOpen={false} />
-                </div>
+				<Link
+					href={"/staff/settings"}
+					className={`flex items-center gap-4 px-4 py-2 cursor-pointer ${"hover:bg-gray-600 text-gray-300"}`}
+				>
+					<div className="text-xl">
+						<FaCog />
+					</div>
+				</Link>
+				<div>
+					<LogoutModal isOpen={false} />
+				</div>
 			</div>
 			{status == "success" && children}
 			{status == "loading" && <Loading />}
@@ -78,36 +82,3 @@ export default function StaffLayout({
 		</div>
 	);
 }
-
-interface NavItemProps {
-	icon: React.ReactNode;
-	label: string;
-	isOpen: boolean;
-	link: string;
-}
-const NavItem: React.FC<NavItemProps> = ({
-	icon,
-	label,
-	isOpen,
-	link,
-}) => {
-	const pathname = usePathname();
-	let isActive = false;
-	if (link === "/admin") {
-		isActive = pathname === link;
-	} else {
-		isActive = pathname.includes(link);
-	}
-
-	return (
-		<Link
-			href={link}
-			className={`flex items-center gap-4 px-4 py-2 cursor-pointer ${
-				isActive ? "bg-gray-700 text-white" : "hover:bg-gray-600 text-gray-300"
-			}`}
-		>
-			<div className="text-xl">{icon}</div>
-			{isOpen && <span className="text-sm">{label}</span>}
-		</Link>
-	);
-};

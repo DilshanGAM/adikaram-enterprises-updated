@@ -11,9 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { FaSignOutAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function LogoutModal({ isOpen }: { isOpen: boolean }) {
 	const [modalOpen, setModalOpen] = useState(false);
+	const router = useRouter();
 
 	const handleLogout = () => {
 		// Perform logout logic (clear token, redirect, etc.)
@@ -23,7 +25,7 @@ export default function LogoutModal({ isOpen }: { isOpen: boolean }) {
 
 		// Redirect user to login page
 		setTimeout(() => {
-			window.location.href = "/";
+			router.push("/");
 		}, 1500);
 	};
 
