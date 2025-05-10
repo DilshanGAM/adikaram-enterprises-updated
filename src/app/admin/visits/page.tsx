@@ -17,7 +17,7 @@ export default function VisitsPage() {
     useEffect(() => {
         axios.get("/api/visit/active" , {
             headers: {
-                user: localStorage.getItem("user")
+                Authorization: "Bearer "+localStorage.getItem("token")
             }
         }).then((res) => {
             setVisits(res.data.visits);

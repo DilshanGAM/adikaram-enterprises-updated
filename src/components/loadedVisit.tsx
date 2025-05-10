@@ -53,7 +53,6 @@ export default function LoadedVisitScreen({
 				</div>
 			)}
 			<br />
-
 		</div>
 	);
 }
