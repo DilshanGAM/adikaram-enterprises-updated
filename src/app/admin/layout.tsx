@@ -9,7 +9,7 @@ import {
 	FaSignOutAlt,
 } from "react-icons/fa";
 import { RiMotorbikeFill } from "react-icons/ri";
-import { FaCarSide, FaShop, FaUserGroup } from "react-icons/fa6";
+import { FaCarSide, FaShop, FaTruckRampBox, FaUserGroup } from "react-icons/fa6";
 import { MdWarehouse } from "react-icons/md";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -110,11 +110,17 @@ export default function AdminLayout({
 						isOpen={isOpen}
 					/>
 					<NavItem
+						link="/admin/loadout"
+						icon={<FaTruckRampBox />}
+						label="Loadout"
+						isOpen={isOpen}
+					/>
+					<NavItem
 						link="/admin/settings"
 						icon={<FaCog />}
 						label="Settings"
 						isOpen={isOpen}
-					/>
+					/>					
 					<LogoutModal isOpen={isOpen} />
 				</div>
 			</div>

@@ -194,4 +194,3 @@ export interface ReturnBillType{
     payments: PaymentType[];
     shop?: ShopType;
 }
-
