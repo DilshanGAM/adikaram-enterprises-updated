@@ -40,18 +40,19 @@ export default function LoadedVisitScreen({
 	});
 
 	return (
-		<div className="w-full h-full max-h-full flex items-center  overflow-y-scroll">
+		<div className="w-full h-full max-h-full flex items-  overflow-y-scroll py-10 ">
 			{shopsLoadStatus === "loading" && <Loading />}
 			{shopsLoadStatus === "error" && (
 				<OopsPage message="Failed to load shops" />
 			)}
 			{shopsLoadStatus === "loaded" && (
-				<div className="w-full flex flex-col items-center space-y-4">
+				<div className="w-full flex flex-col items-center space-y-8">
 					{shops.map((shop, index) => (
 						<StaffShopCard key={index} shop={shop} />
 					))}
 				</div>
 			)}
+			<br />
 
 		</div>
 	);

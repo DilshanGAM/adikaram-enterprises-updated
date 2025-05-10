@@ -15,10 +15,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Phone, User, ShoppingBag } from "lucide-react";
+import StaffShopAddingForm from "./staff-shop-adding-form";
 
 export default function StaffShopCard({ shop }: { shop: ShopRouteType }) {
 	const [shopLoadStatus, setShopLoadStatus] = useState("loading"); // loading, loaded, error
 	const [shopData, setShopData] = useState<ShopType | null>(null);
+	const [addShopModalOpen, setAddShopModalOpen] = useState(false);
 
 	useEffect(() => {
 		if (shopLoadStatus === "loading") {
@@ -40,64 +42,84 @@ export default function StaffShopCard({ shop }: { shop: ShopRouteType }) {
 	}, []);
 
 	return (
-		<Card className="w-[300px] bg-white shadow-lg rounded-lg">
-			{shopLoadStatus === "loading" && (
-				<p className="text-center py-4">Loading...</p>
-			)}
-			{shopLoadStatus === "error" && <OopsPage message="Failed to load shop" />}
-			{shopLoadStatus === "loaded" && shopData && (
-				<>
-					<CardHeader>
-						<CardTitle className="text-lg font-semibold text-pepsiBlue flex items-center gap-2">
-							<ShoppingBag className="w-5 h-5 text-gray-600" />
-							{shopData.name}
-						</CardTitle>
-						<CardDescription className="text-gray-500 text-sm">
-							{shopData.status.toUpperCase()}
-						</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-2">
-						<div className="flex items-center text-sm text-gray-700">
-							<MapPin className="w-4 h-4 text-gray-500 mr-2" />
-							<span className="font-medium">Address:</span> {shopData.address}
-						</div>
-						<div className="flex items-center text-sm text-gray-700">
-							<Phone className="w-4 h-4 text-gray-500 mr-2" />
-							<span className="font-medium">Phone:</span> {shopData.phone}
-						</div>
-						<div className="flex items-center text-sm text-gray-700">
-							<User className="w-4 h-4 text-gray-500 mr-2" />
-							<span className="font-medium">Owner:</span> {shopData.owner}
-						</div>
+		<>
+			{" "}
+			<Card className="w-[300px] bg-white shadow-lg rounded-lg">
+				{shopLoadStatus === "loading" && (
+					<p className="text-center py-4">Loading...</p>
+				)}
+				{shopLoadStatus === "error" && (
+					<OopsPage message="Failed to load shop" />
+				)}
+				{shopLoadStatus === "loaded" && shopData && (
+					<>
+						<CardHeader>
+							<CardTitle className="text-lg font-semibold text-pepsiBlue flex items-center gap-2">
+								<ShoppingBag className="w-5 h-5 text-gray-600" />
+								{shopData.name}
+							</CardTitle>
+							<CardDescription className="text-gray-500 text-sm">
+								{shopData.status.toUpperCase()}
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="space-y-2">
+							<div className="flex items-center text-sm text-gray-700">
+								<MapPin className="w-4 h-4 text-gray-500 mr-2" />
+								<span className="font-medium">Address:</span> {shopData.address}
+							</div>
+							<div className="flex items-center text-sm text-gray-700">
+								<Phone className="w-4 h-4 text-gray-500 mr-2" />
+								<span className="font-medium">Phone:</span> {shopData.phone}
+							</div>
+							<div className="flex items-center text-sm text-gray-700">
+								<User className="w-4 h-4 text-gray-500 mr-2" />
+								<span className="font-medium">Owner:</span> {shopData.owner}
+							</div>
 
-						<Separator className="my-2" />
+							<Separator className="my-2" />
 
-						{/* Buttons Section */}
-						<div className="flex justify-between gap-2">
-							{/* Billing Button (Link) */}
-							<Link href={`/staff/billUI?shopName=${shop.shop_name}`}>
-								<Button variant="default" className="w-full">
-									Billing
-								</Button>
-							</Link>
+							{/* Buttons Section */}
+							<div className="flex justify-between gap-2">
+								{/* Billing Button (Link) */}
+								<Link href={`/staff/billUI?shopName=${shop.shop_name}`}>
+									<Button variant="default" className="w-full">
+										Billing
+									</Button>
+								</Link>
 
-							{/* Returns Button */}
-							<Link href={`/staff/returnsUI?shopName=${shop.shop_name}`}>
-								<Button variant="outline" className="w-full">
-									Returns
-								</Button>
-							</Link>
+								{/* Returns Button */}
+								<Link href={`/staff/returnsUI?shopName=${shop.shop_name}`}>
+									<Button variant="outline" className="w-full">
+										Returns
+									</Button>
+								</Link>
 
-							{/* Add Shop Button */}
-							<Link href={`/staff/payments?shopName=${shop.shop_name}`}>
-							<Button variant="outline" className="w-full">
-								Payments
-							</Button>
-							</Link>
-						</div>
-					</CardContent>
-				</>
-			)}
-		</Card>
+								{/* Add Shop Button */}
+								<Link href={`/staff/payments?shopName=${shop.shop_name}`}>
+									<Button variant="outline" className="w-full">
+										Payments
+									</Button>
+								</Link>
+							</div>
+						</CardContent>
+					</>
+				)}
+			</Card>
+			<Button  className=" w-[300px]  rounded-sm flex justify-center items-center shadow-lg bottom-[-40px]  bg-white hover:bg-white my-3" 
+				onClick={() => {
+					setAddShopModalOpen(true);
+				}
+			}>
+				<span  className="text-center text-pepsiBlue font-semibold">
+					Add Shop +
+				</span>
+			</Button>
+			<StaffShopAddingForm
+				isAddEditModalOpen={addShopModalOpen}
+				setIsAddEditModalOpen={setAddShopModalOpen}
+				previousShopName={shop.shop_name}
+			/>
+
+		</>
 	);
 }
