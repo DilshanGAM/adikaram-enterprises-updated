@@ -12,32 +12,46 @@ import {
 export default function Pager({
 	pageInfo,
 	setPageInfo,
+	reset = () => {},
 }: {
 	pageInfo: any;
-	setPageInfo: (pageInfo:any) => void;
+	setPageInfo: (pageInfo: any) => void;
+	reset?: () => void;
 }) {
 	return (
 		<div className="flex items-center justify-center mt-4 space-x-4">
 			{/* Previous Button */}
 			<Button
 				variant="outline"
-				onClick={() => setPageInfo({ ...pageInfo, page : pageInfo.page - 1 })}
+				onClick={() => {
+					setPageInfo({ ...pageInfo, page: pageInfo.page - 1 });
+					reset();
+				}}
 				disabled={pageInfo.page === 1}
 			>
 				Previous
 			</Button>
 
 			{/* Page Selector */}
-			<Select onValueChange={(value) => setPageInfo({ ...pageInfo, page: parseInt(value) })}>
+			<Select
+				onValueChange={(value) => {
+					setPageInfo({ ...pageInfo, page: parseInt(value) });
+					reset();
+				}}
+			>
 				<SelectTrigger className="w-[150px] text-center">
-					<SelectValue placeholder={`Page ${pageInfo.page} of ${pageInfo.totalPages}`} />
+					<SelectValue
+						placeholder={`Page ${pageInfo.page} of ${pageInfo.totalPages}`}
+					/>
 				</SelectTrigger>
 				<SelectContent>
-					{Array.from({ length: pageInfo.totalPages }, (_, i) => i + 1).map((p) => (
-						<SelectItem key={p} value={p.toString()}>
-							{p}
-						</SelectItem>
-					))}
+					{Array.from({ length: pageInfo.totalPages }, (_, i) => i + 1).map(
+						(p) => (
+							<SelectItem key={p} value={p.toString()}>
+								{p}
+							</SelectItem>
+						)
+					)}
 				</SelectContent>
 			</Select>
 
@@ -49,11 +63,13 @@ export default function Pager({
 			{/* Next Button */}
 			<Button
 				variant="outline"
-				onClick={() => setPageInfo(
-					{ ...pageInfo, page: pageInfo.page
-					+ 1 }
-				)}
-				disabled={pageInfo.page === pageInfo.totalPages||pageInfo.totalPages===0}
+				onClick={() => {
+					setPageInfo({ ...pageInfo, page: pageInfo.page + 1 });
+					reset();
+				}}
+				disabled={
+					pageInfo.page === pageInfo.totalPages || pageInfo.totalPages === 0
+				}
 			>
 				Next
 			</Button>

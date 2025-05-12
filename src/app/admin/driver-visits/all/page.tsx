@@ -10,7 +10,7 @@ import Loading from "@/components/loading";
 export default function AllVisitsPage() {
   const [pageInfo, setPageInfo] = useState({
     page: 1,
-    limit: 50,
+    limit: 4,
     totalPages: 0,
   });
   const [driverVisits, setDriverVisits] = useState<any[]>([]);

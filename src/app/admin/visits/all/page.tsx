@@ -1,6 +1,7 @@
 "use client";
 "use client";
 
+import Loading from "@/components/loading";
 import Pager from "@/components/pager";
 import VisitCard from "@/components/visitCard";
 import { VisitType } from "@/types/user";
@@ -9,48 +10,52 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function VisitsPage() {
-	const [status, setStatus] = useState("loading");
+	const [status, setStatus] = useState("loading");// "success" | "error" | "loading"
 	const [visits, setVisits] = useState<VisitType[]>([]);
-	const [resetPointer, setResetPointer] = useState<boolean>(false);
 	const [pageInfo, setPageInfo] = useState({
 		page: 1,
-		limit: 10,
+		limit: 2,
 		totalPages: 0,
 	});
-	function reload() {
-		setResetPointer(!resetPointer);
-	}
-	useEffect(() => {
 
-		axios
-			.get("/api/visit/all?page="+pageInfo.page+"&limit="+pageInfo.limit, {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem("token")}`,
-				},
-			})
-			.then((res) => {
-				setVisits(res.data.visits);
-				setPageInfo({
-					page : res.data.pageInfo.page,
-					limit : res.data.pageInfo.limit,
-					totalPages : res.data.pageInfo.totalPages,
+	useEffect(() => {
+		if (status === "loading") {
+			axios
+				.get(
+					"/api/visit/all?page=" + pageInfo.page + "&limit=" + pageInfo.limit,
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+					}
+				)
+				.then((res) => {
+					setVisits(res.data.visits);
+					setPageInfo({
+						page: res.data.pageInfo.page,
+						limit: res.data.pageInfo.limit,
+						totalPages: res.data.pageInfo.totalPages,
+					});
+					setStatus("success");
 				})
-				setStatus("success");
-			})
-			.catch((err) => {
-				setStatus("error");
-				toast.error(err.response.data.message);
-			});
-		
-	}, [resetPointer,pageInfo.page]);
+				.catch((err) => {
+					setStatus("error");
+					toast.error(err.response.data.message);
+				});
+		}
+	}, [status]);
 	return (
 		<div className="w-full min-h-full flex  flex-col max-h-full overflow-y-scroll py-5">
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 ">
+			{status=="success"?<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 ">
 				{visits.map((visit) => (
-					<VisitCard key={visit.id} visit={visit} reload={reload} />
+					<VisitCard key={visit.id} visit={visit} reload={()=>setStatus("loading")} />
 				))}
-			</div>
-			<Pager pageInfo={pageInfo} setPageInfo={setPageInfo} />
+			</div>:<Loading/>}
+			<Pager
+				pageInfo={pageInfo}
+				setPageInfo={setPageInfo}
+				reset={() => setStatus("loading")}
+			/>
 		</div>
 	);
 }

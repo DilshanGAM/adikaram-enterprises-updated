@@ -13,7 +13,7 @@ export default function BillsPage() {
 	const [status, setStatus] = useState("loading");
     const [pageInfo, setPageInfo] = useState({
         page: 1,
-        limit: 10,
+        limit: 5,
         totalPages: 0,
       });
 	useEffect(() => {
@@ -42,7 +42,7 @@ export default function BillsPage() {
 					setStatus("error");
 				});
 		}
-	}, [status, pageInfo.page]);
+	}, [status]);
 	return <div className="w-full  flex justify-center h-full">
         {status === "loading" && <Loading />}
       {status === "error" && <p className="text-red-500">Failed to load bills. Please try again later.</p>}
@@ -87,7 +87,7 @@ export default function BillsPage() {
             })}
           </TableBody>
         </Table>
-        <Pager pageInfo={pageInfo} setPageInfo={setPageInfo} />
+        <Pager pageInfo={pageInfo} setPageInfo={setPageInfo} reset={()=>setStatus("loading")} />
         </div>
       )}
     </div>;
