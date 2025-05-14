@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
         );
 	} catch (err) {
 		return NextResponse.json(
-			{ message: "Error getting current visit" },
+			{ message: "Error getting current visit", err },
 			{ status: 500 }
 		);
 	}

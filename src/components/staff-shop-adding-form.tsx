@@ -75,6 +75,7 @@ export default function StaffShopAddingForm({
         } catch (error) {
             setLoading(false);
             if (axios.isAxiosError(error)) {
+				alert(error.response?.data.err.toString() || "An error occurred");
                 alert(error.response?.data.message || "An error occurred");
             } else {
                 toast.error("An error occurred");
