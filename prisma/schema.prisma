@@ -137,6 +137,7 @@ model invoice {
   payments       payment[]
   shop           shop      @relation(fields: [shop_name], references: [name])
   visit          visit     @relation(fields: [visit_id], references: [id])
+  edited         Boolean   @default(false)
 }
 
 model invoice_item {

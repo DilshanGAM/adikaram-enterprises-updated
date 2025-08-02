@@ -12,6 +12,7 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
+//**Milk & Fresh** */
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, Phone, User, ShoppingBag } from "lucide-react";
@@ -25,9 +26,12 @@ export default function StaffShopCard({ shop }: { shop: ShopRouteType }) {
 	useEffect(() => {
 		if (shopLoadStatus === "loading") {
 			axios
-				.get(`/api/shop/byId?shop=${shop.shop_name}`, {
+				.get(`/api/shop/byId`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+					params: {
+						shop: shop.shop_name,
 					},
 				})
 				.then((res) => {
