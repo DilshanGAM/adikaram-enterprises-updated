@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
 			//get invoice from body
 			const body = await req.json();
 
+			console.log(body.shop_name);
+
 			//check for each items in the invoice if the quantity is available in stock
 			const items = body.items || [];
 			const batchBasedItems = items.filter(

@@ -85,7 +85,7 @@ export default function StaffShopCard({ shop }: { shop: ShopRouteType }) {
 							{/* Buttons Section */}
 							<div className="flex justify-between gap-2">
 								{/* Billing Button (Link) */}
-								<Link href={`/staff/billUI?shopName=${shop.shop_name}`}>
+								<Link href={{pathname:`/staff/billUI`, query: {shopName: shop.shop_name}}} >
 									<Button variant="default" className="w-full">
 										Billing
 									</Button>

@@ -126,7 +126,7 @@ export default function AdminLayout({
 			</div>
 
 			{/* Main Content */}
-			<div className="flex-1 bg-gray-100">{children}</div>
+			<div className="max-h-[100vh] overflow-y-scroll flex-1 bg-gray-100">{children}</div>
 		</div>
 	);
 }
