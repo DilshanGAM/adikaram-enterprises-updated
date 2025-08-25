@@ -17,6 +17,7 @@ import {
 import { InvoiceType } from "@/types/user";
 import axios from "axios";
 import UpdateBillSummary from "@/components/updateBillSummary";
+import Loading from "@/components/loading";
 
 function UpdateBillUI() {
 	const searchParams = useSearchParams();
@@ -38,7 +39,9 @@ function UpdateBillUI() {
 				if (res.data.invoice) {
 					setInvoice(res.data.invoice);
 					setShopName(res.data.invoice.shop_name);
-					summaryResetter ? setSummaryResetter(false) : setSummaryResetter(true);
+					summaryResetter
+						? setSummaryResetter(false)
+						: setSummaryResetter(true);
 					console.log(res);
 				} else {
 					console.error("No invoice data found");
@@ -100,150 +103,156 @@ function UpdateBillUI() {
 			className="w-full max-h-[calc(100vh-60px)] h-[calc(100vh-60px)] px-7
          flex flex-col items-center "
 		>
-			<div className="w-full flex flex-col items-center space-y-4">
-				<h1 className="text-4xl font-bold text-pepsiBlue">
-					Shop name : {shopName}
-				</h1>
-				<Time />
-			</div>
-			<Separator className="h-1 w-full" orientation="horizontal" />
+			{shopName == null ? (
+				<Loading />
+			) : (
+				<>
+					<div className="w-full flex flex-col items-center space-y-4">
+						<h1 className="text-4xl font-bold text-pepsiBlue">
+							Shop name : {shopName}
+						</h1>
+						<Time />
+					</div>
+					<Separator className="h-1 w-full" orientation="horizontal" />
 
-			{/* bill items */}
-			<div className="w-full flex flex-col items-center space-y-4">
-				<h1 className="text-2xl font-bold text-pepsiBlue">Bill Items</h1>
+					{/* bill items */}
+					<div className="w-full flex flex-col items-center space-y-4">
+						<h1 className="text-2xl font-bold text-pepsiBlue">Bill Items</h1>
 
-				{/* modal */}
-				<ProductAddingModal
-					setInvoice={setInvoice}
-					invoice={invoice}
-					isFreeIssue={false}
-					setSummaryResetter={setSummaryResetter}
-					summaryResetter={summaryResetter}
-				/>
+						{/* modal */}
+						<ProductAddingModal
+							setInvoice={setInvoice}
+							invoice={invoice}
+							isFreeIssue={false}
+							setSummaryResetter={setSummaryResetter}
+							summaryResetter={summaryResetter}
+						/>
 
-				{/* table */}
-				<div className="w-full overflow-auto">
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Product Key</TableHead>
-								<TableHead>Batch ID</TableHead>
-								<TableHead>UOM</TableHead>
-								<TableHead>Packs</TableHead>
-								<TableHead>Loose</TableHead>
-								<TableHead>Quantity</TableHead>
-								<TableHead>Price</TableHead>
-								<TableHead>Total</TableHead>
-								<TableHead>Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{invoice.items?.length ? (
-								invoice.items.map((item, index) => (
-									<TableRow key={index}>
-										<TableCell>{item.product_key}</TableCell>
-										<TableCell>
-											{!item.batch_id || item.batch_id == -99
-												? "N/A"
-												: item.batch_id}
-										</TableCell>
-										<TableCell>{item.uom}</TableCell>
-										<TableCell>{item.packs}</TableCell>
-										<TableCell>{item.loose}</TableCell>
-										<TableCell>{item.quantity}</TableCell>
-										<TableCell>{item.price}</TableCell>
-										<TableCell>{item.price * item.quantity}</TableCell>
-										<TableCell>
-											<Button
-												variant="destructive"
-												onClick={() => handleRemoveItem(index)}
-											>
-												Remove
-											</Button>
+						{/* table */}
+						<div className="w-full overflow-auto">
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>Product Key</TableHead>
+										<TableHead>Batch ID</TableHead>
+										<TableHead>UOM</TableHead>
+										<TableHead>Packs</TableHead>
+										<TableHead>Loose</TableHead>
+										<TableHead>Quantity</TableHead>
+										<TableHead>Price</TableHead>
+										<TableHead>Total</TableHead>
+										<TableHead>Actions</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{invoice.items?.length ? (
+										invoice.items.map((item, index) => (
+											<TableRow key={index}>
+												<TableCell>{item.product_key}</TableCell>
+												<TableCell>
+													{!item.batch_id || item.batch_id == -99
+														? "N/A"
+														: item.batch_id}
+												</TableCell>
+												<TableCell>{item.uom}</TableCell>
+												<TableCell>{item.packs}</TableCell>
+												<TableCell>{item.loose}</TableCell>
+												<TableCell>{item.quantity}</TableCell>
+												<TableCell>{item.price}</TableCell>
+												<TableCell>{item.price * item.quantity}</TableCell>
+												<TableCell>
+													<Button
+														variant="destructive"
+														onClick={() => handleRemoveItem(index)}
+													>
+														Remove
+													</Button>
+												</TableCell>
+											</TableRow>
+										))
+									) : (
+										<TableRow>
+											<TableCell colSpan={8} className="text-center">
+												No items added yet.
+											</TableCell>
+										</TableRow>
+									)}
+								</TableBody>
+							</Table>
+						</div>
+					</div>
+					<Separator className="h-1 w-full" orientation="horizontal" />
+					<div className="w-full flex flex-col items-center space-y-4">
+						<h1 className="text-2xl font-bold text-pepsiBlue">Free Issues</h1>
+						{/* modal */}
+						<ProductAddingModal
+							setInvoice={setInvoice}
+							invoice={invoice}
+							isFreeIssue={true}
+							setSummaryResetter={setSummaryResetter}
+							summaryResetter={summaryResetter}
+						/>
+						{/* table */}
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Product Key</TableHead>
+									<TableHead>Batch ID</TableHead>
+									<TableHead>UOM</TableHead>
+									<TableHead>Packs</TableHead>
+									<TableHead>Loose</TableHead>
+									<TableHead>Quantity</TableHead>
+									<TableHead>Price</TableHead>
+									<TableHead>Total</TableHead>
+									<TableHead>Actions</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{invoice.freeItems?.length ? (
+									invoice.freeItems.map((item, index) => (
+										<TableRow key={index}>
+											<TableCell>{item.product_key}</TableCell>
+											<TableCell>
+												{!item.batch_id || item.batch_id == -99
+													? "N/A"
+													: item.batch_id}
+											</TableCell>
+											<TableCell>{item.uom}</TableCell>
+											<TableCell>{item.packs}</TableCell>
+											<TableCell>{item.loose}</TableCell>
+											<TableCell>{item.quantity}</TableCell>
+											<TableCell>Free</TableCell>
+											<TableCell>Free</TableCell>
+											<TableCell>
+												<Button
+													variant="destructive"
+													onClick={() => handleRemoveFreeItem(index)}
+												>
+													Remove
+												</Button>
+											</TableCell>
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell colSpan={7} className="text-center">
+											No items added yet.
 										</TableCell>
 									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={8} className="text-center">
-										No items added yet.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</div>
-			</div>
-			<Separator className="h-1 w-full" orientation="horizontal" />
-			<div className="w-full flex flex-col items-center space-y-4">
-				<h1 className="text-2xl font-bold text-pepsiBlue">Free Issues</h1>
-				{/* modal */}
-				<ProductAddingModal
-					setInvoice={setInvoice}
-					invoice={invoice}
-					isFreeIssue={true}
-					setSummaryResetter={setSummaryResetter}
-					summaryResetter={summaryResetter}
-				/>
-				{/* table */}
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead>Product Key</TableHead>
-							<TableHead>Batch ID</TableHead>
-							<TableHead>UOM</TableHead>
-							<TableHead>Packs</TableHead>
-							<TableHead>Loose</TableHead>
-							<TableHead>Quantity</TableHead>
-							<TableHead>Price</TableHead>
-							<TableHead>Total</TableHead>
-							<TableHead>Actions</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{invoice.freeItems?.length ? (
-							invoice.freeItems.map((item, index) => (
-								<TableRow key={index}>
-									<TableCell>{item.product_key}</TableCell>
-									<TableCell>
-										{!item.batch_id || item.batch_id == -99
-											? "N/A"
-											: item.batch_id}
-									</TableCell>
-									<TableCell>{item.uom}</TableCell>
-									<TableCell>{item.packs}</TableCell>
-									<TableCell>{item.loose}</TableCell>
-									<TableCell>{item.quantity}</TableCell>
-									<TableCell>Free</TableCell>
-									<TableCell>Free</TableCell>
-									<TableCell>
-										<Button
-											variant="destructive"
-											onClick={() => handleRemoveFreeItem(index)}
-										>
-											Remove
-										</Button>
-									</TableCell>
-								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell colSpan={7} className="text-center">
-									No items added yet.
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</div>
-			<Separator className="h-1 w-full" orientation="horizontal" />
-			<UpdateBillSummary
-				billSummary={billSummary}
-				setInvoice={setInvoice}
-				invoice={invoice}
-				setSummaryResetter={setSummaryResetter}
-				summaryResetter={summaryResetter}
-			/>
+								)}
+							</TableBody>
+						</Table>
+					</div>
+					<Separator className="h-1 w-full" orientation="horizontal" />
+					<UpdateBillSummary
+						billSummary={billSummary}
+						setInvoice={setInvoice}
+						invoice={invoice}
+						setSummaryResetter={setSummaryResetter}
+						summaryResetter={summaryResetter}
+					/>
+				</>
+			)}
 		</div>
 	);
 }

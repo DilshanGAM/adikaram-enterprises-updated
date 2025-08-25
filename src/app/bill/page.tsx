@@ -17,6 +17,8 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IoPrintSharp } from "react-icons/io5";
 import { generateInvoicePDF } from "@/lib/generateInvoicePDF";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function BillPage() {
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -72,6 +74,9 @@ function BillPage() {
                         <p><span className="font-semibold">Status:</span> {invoice.status}</p>
                     </div>
                 </CardContent>
+                <Link href={`/updateBill?billId=${invoice.id}`} className="absolute right-1 bottom-1 bg-black text-white px-2 py-1 rounded hover:bg-gray-800" target="_blank">
+                    Edit Bill
+                </Link>
             </Card>
 
             <Separator />
