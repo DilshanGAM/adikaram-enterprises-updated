@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
 									`Batch with id ${batchCombined[i].batchId} not found`
 								);
 							}
-							if (allBatches[i]!.stock < batchCombined[i].qty) {
+							if (allBatches[i]!.remaining < batchCombined[i].qty) {
 								throw new Error(
 									batchCombined[i].productKey +
 										" quantity not available in stock"

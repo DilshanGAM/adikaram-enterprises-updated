@@ -82,7 +82,7 @@ export default function LoginPage() {
 								</div>
 								<Button
 									onClick={handleLogin}
-									className="w-full"
+									className="w-full "
 									disabled={loading}
 									variant="default"
 								>

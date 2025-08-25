@@ -15,8 +15,8 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { InvoiceType } from "@/types/user";
-import BillSummary from "@/components/billSummary";
 import axios from "axios";
+import UpdateBillSummary from "@/components/updateBillSummary";
 
 function UpdateBillUI() {
 	const searchParams = useSearchParams();
@@ -38,6 +38,7 @@ function UpdateBillUI() {
 				if (res.data.invoice) {
 					setInvoice(res.data.invoice);
 					setShopName(res.data.invoice.shop_name);
+					summaryResetter ? setSummaryResetter(false) : setSummaryResetter(true);
 					console.log(res);
 				} else {
 					console.error("No invoice data found");
@@ -236,7 +237,7 @@ function UpdateBillUI() {
 				</Table>
 			</div>
 			<Separator className="h-1 w-full" orientation="horizontal" />
-			<BillSummary
+			<UpdateBillSummary
 				billSummary={billSummary}
 				setInvoice={setInvoice}
 				invoice={invoice}
