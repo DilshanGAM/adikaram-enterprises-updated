@@ -99,7 +99,7 @@ function BillPage() {
                             <TableRow key={index}>
                                 <TableCell>{item.product.name}</TableCell>
                                 <TableCell>{item.batch?.batch_id || "N/A"}</TableCell>
-                                <TableCell>{item.quantity}</TableCell>
+                                <TableCell>{item.loose + (item.uom * item.packs)}</TableCell>
                                 <TableCell>{item.price.toFixed(2)}</TableCell>
                                 <TableCell>{(item.price * item.quantity).toFixed(2)}</TableCell>
                             </TableRow>
